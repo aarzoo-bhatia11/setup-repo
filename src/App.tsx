@@ -1749,12 +1749,12 @@ function App() {
                   <User className="h-4 w-4" />
                   <span>General</span>
                 </a>
-                <a 
-                  href="#" 
+                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                    activeView === 'setup' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
                   onClick={() => setCurrentPage('account')}
                   className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
                 >
-                  <User className="h-4 w-4" />
+                  {step1Complete ? 'Continue Setup' : 'Get Started'}
                   <span>Account</span>
                 </a>
                 <a 
@@ -1762,18 +1762,38 @@ function App() {
                   onClick={() => setCurrentPage('get-started')}
                   className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-lg border-l-4 ${
                     currentPage === 'get-started' 
-                      ? 'text-gray-900 bg-blue-50 border-blue-500 font-medium' 
-                      : 'text-gray-700 hover:bg-gray-50 border-transparent'
+                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                    activeView === 'general' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
                   }`}
-                >
-                  <Play className={`h-4 w-4 ${currentPage === 'get-started' ? 'text-blue-600' : ''}`} />
+                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                    activeView === 'trails' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
                   <span>Get Started</span>
                 </a>
               </div>
 
               {/* Product Section */}
-              {trailsGenerated && (
-                <div className="pt-8">
+                
+                <button
+                  onClick={() => setActiveView('tickets')}
+                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                    activeView === 'tickets' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Ticket className="w-4 h-4 mr-3" />
+                  Tickets
+                </button>
+                
+                <button
+                  onClick={() => setActiveView('conversations')}
+                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                    activeView === 'conversations' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <MessageSquare className="w-4 h-4 mr-3" />
+                  Conversations
+                </button>
+                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                    activeView === 'account' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
                   <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                     Product
                   </h3>
@@ -1782,8 +1802,8 @@ function App() {
                     onClick={() => setCurrentPage('trails')}
                     className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-lg ${
                       currentPage === 'trails' 
-                        ? 'text-gray-900 bg-gray-100 font-medium' 
-                        : 'text-gray-700 hover:bg-gray-50'
+                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                      activeView === 'snap-ins' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     <GitBranch className="h-4 w-4" />
@@ -1792,8 +1812,8 @@ function App() {
                 </div>
               )}
 
-              {/* Work Section */}
-              {showWorkSections && (
+                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                      activeView === 'airsyncs' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
                 <div className="pt-8">
                   <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                     Work
@@ -1975,6 +1995,34 @@ function App() {
                       <span>Snap-ins</span>
                     </a>
                   </div>
+                </div>
+              )}
+              
+              {/* Knowledge Management Section - Show after AirSync completion */}
+              {showKnowledgeManagement && (
+                <div className="mb-4">
+                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    KNOWLEDGE MANAGEMENT
+                  </div>
+                  <button
+                    onClick={() => setActiveView('knowledge-base')}
+                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                      activeView === 'knowledge-base' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <BookOpen className="w-4 h-4 mr-3" />
+                    Knowledge Base
+                  </button>
+                  
+                  <button
+                    onClick={() => setActiveView('article-analytics')}
+                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                      activeView === 'article-analytics' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <BarChart3 className="w-4 h-4 mr-3" />
+                    Article Analytics
+                  </button>
                 </div>
               )}
             </nav>
