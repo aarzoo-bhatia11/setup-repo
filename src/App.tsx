@@ -23,15 +23,14 @@ interface ToastMessage {
 }
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<string>('get-started');
-  const [activeView, setActiveView] = useState<string>('get-started');
+  const [currentPage, setCurrentPage] = useState<string>('primary-goal');
+  const [activeView, setActiveView] = useState<string>('primary-goal');
   const [primaryGoalComplete, setPrimaryGoalComplete] = useState(false);
   const [step1Complete, setStep1Complete] = useState(false);
   const [step2Complete, setStep2Complete] = useState(false);
   const [step3Complete, setStep3Complete] = useState(false);
   const [airsyncComplete, setAirsyncComplete] = useState(false);
-  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
-  const [customGoal, setCustomGoal] = useState('');
+  const [primaryGoal, setPrimaryGoal] = useState('');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const addToast = (message: string, type: 'success' | 'info' = 'success') => {
@@ -47,20 +46,12 @@ const App: React.FC = () => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   };
 
-  const handleGoalToggle = (goal: string) => {
-    setSelectedGoals(prev => 
-      prev.includes(goal) 
-        ? prev.filter(g => g !== goal)
-        : [...prev, goal]
-    );
-  };
-
   const handlePrimaryGoalSubmit = () => {
-    if (selectedGoals.length > 0 || customGoal.trim()) {
+    if (primaryGoal.trim()) {
       setPrimaryGoalComplete(true);
-      setCurrentPage('setup-step1');
-      setActiveView('setup-step1');
-      addToast('Primary goals saved! Setting up your optimal support path...', 'info');
+      setCurrentPage('get-started');
+      setActiveView('setup');
+      addToast('Primary goal saved! Setting up your optimal support path...', 'info');
     }
   };
 
@@ -86,8 +77,9 @@ const App: React.FC = () => {
 
   const renderPrimaryGoalSelection = () => (
     <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-6">
-        <h1 className="text-xl font-medium text-gray-900 mb-2">
+      <div className="text-center mb-8">
+        <Target className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">
           What's your primary goal for DevRev Support?
         </h1>
         <p className="text-sm text-gray-600">
@@ -97,73 +89,55 @@ const App: React.FC = () => {
 
       <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          Select your main objectives (you can choose multiple):
+          Describe your main objective:
         </label>
-        
-        <div className="grid grid-cols-1 gap-3 mb-4">
-          <div 
-            className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-              selectedGoals.includes('Scale support without hiring more agents') ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-            }`}
-            onClick={() => handleGoalToggle('Scale support without hiring more agents')}
-          >
-            <div className="flex items-center">
-              <Users className="w-5 h-5 text-blue-600 mr-3" />
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">Scale support without hiring more agents</h3>
-                <p className="text-xs text-gray-600">Handle more tickets without growing team size</p>
-              </div>
-            </div>
-          </div>
+        <textarea
+          value={primaryGoal}
+          onChange={(e) => setPrimaryGoal(e.target.value)}
+          placeholder="e.g., Scale support without hiring more agents, Self-Service Expansion"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          rows={3}
+        />
+      </div>
 
-          <div 
-            className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-              selectedGoals.includes('Self-Service Expansion') ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-            }`}
-            onClick={() => handleGoalToggle('Self-Service Expansion')}
-          >
-            <div className="flex items-center">
-              <Zap className="w-5 h-5 text-blue-600 mr-3" />
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">Self-Service Expansion</h3>
-                <p className="text-xs text-gray-600">Enable customers to find answers independently</p>
-              </div>
-            </div>
-          </div>
-
-          <div 
-            className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-              selectedGoals.includes('Improve efficiency and response times') ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-            }`}
-            onClick={() => handleGoalToggle('Improve efficiency and response times')}
-          >
-            <div className="flex items-center">
-              <TrendingUp className="w-5 h-5 text-blue-600 mr-3" />
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">Improve efficiency and response times</h3>
-                <p className="text-xs text-gray-600">Faster response times and better workflows</p>
-              </div>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div 
+          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+            primaryGoal.includes('Scale support') ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+          }`}
+          onClick={() => setPrimaryGoal('Scale support without hiring more agents')}
+        >
+          <Users className="w-6 h-6 text-blue-600 mb-2" />
+          <h3 className="text-sm font-medium text-gray-900 mb-1">Scale Support</h3>
+          <p className="text-xs text-gray-600">Handle more tickets without growing team size</p>
         </div>
 
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Or describe your custom objective:
-          </label>
-          <textarea
-            value={customGoal}
-            onChange={(e) => setCustomGoal(e.target.value)}
-            placeholder="e.g., Integrate with existing CRM system"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-            rows={2}
-          />
+        <div 
+          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+            primaryGoal.includes('Self-Service') ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+          }`}
+          onClick={() => setPrimaryGoal('Self-Service Expansion')}
+        >
+          <Zap className="w-6 h-6 text-blue-600 mb-2" />
+          <h3 className="text-sm font-medium text-gray-900 mb-1">Self-Service</h3>
+          <p className="text-xs text-gray-600">Enable customers to find answers independently</p>
+        </div>
+
+        <div 
+          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+            primaryGoal.includes('Improve efficiency') ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+          }`}
+          onClick={() => setPrimaryGoal('Improve efficiency and response times')}
+        >
+          <TrendingUp className="w-6 h-6 text-blue-600 mb-2" />
+          <h3 className="text-sm font-medium text-gray-900 mb-1">Efficiency</h3>
+          <p className="text-xs text-gray-600">Faster response times and better workflows</p>
         </div>
       </div>
 
       <button
         onClick={handlePrimaryGoalSubmit}
-        disabled={selectedGoals.length === 0 && !customGoal.trim()}
+        disabled={!primaryGoal.trim()}
         className="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
         Continue to Setup
@@ -171,43 +145,29 @@ const App: React.FC = () => {
     </div>
   );
 
-  const renderSetupStep1 = () => (
+  const renderSetupStep = () => (
     <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-6">
-        <h1 className="text-xl font-medium text-gray-900 mb-2">
+      <div className="text-center mb-8">
+        <Play className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">
           Welcome to DevRev AI-Native Support
         </h1>
         <p className="text-sm text-gray-600">
-          Let's get your support system configured based on your goals.
+          Let's get your support system configured based on your goal: "{primaryGoal}"
         </p>
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Step 1: Setting up Trails</h2>
+        <h2 className="text-lg font-medium text-gray-900 mb-4">Initial Configuration</h2>
         <p className="text-sm text-gray-600 mb-4">
-          We'll configure conversation trails to track customer interactions and support workflows automatically.
+          We'll set up your DevRev environment with AI-powered features tailored to your needs.
         </p>
-        
-        <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-            <span className="text-sm text-gray-700">Auto-create trails for new conversations</span>
-            <div className="w-10 h-6 bg-blue-600 rounded-full relative">
-              <div className="w-4 h-4 bg-white rounded-full absolute top-1 right-1"></div>
-            </div>
-          </div>
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-            <span className="text-sm text-gray-700">Enable trail analytics</span>
-            <div className="w-10 h-6 bg-blue-600 rounded-full relative">
-              <div className="w-4 h-4 bg-white rounded-full absolute top-1 right-1"></div>
-            </div>
-          </div>
-        </div>
         
         {step1Complete && (
           <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
             <div className="flex items-center">
               <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-              <span className="text-sm text-green-800">Step 1 completed successfully!</span>
+              <span className="text-sm text-green-800">Initial setup completed successfully!</span>
             </div>
           </div>
         )}
@@ -218,16 +178,16 @@ const App: React.FC = () => {
         disabled={step1Complete}
         className="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
-        {step1Complete ? 'Step 1 Complete' : 'Complete Step 1'}
+        {step1Complete ? 'Setup Complete' : 'Start Setup'}
       </button>
     </div>
   );
 
   const renderTrailsView = () => (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-6">
-        <GitBranch className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-        <h1 className="text-xl font-medium text-gray-900 mb-2">Trails Configuration</h1>
+      <div className="text-center mb-8">
+        <GitBranch className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">Trails Configuration</h1>
         <p className="text-sm text-gray-600">
           Set up conversation trails to track customer interactions and support workflows.
         </p>
@@ -274,8 +234,8 @@ const App: React.FC = () => {
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <Ticket className="w-5 h-5 text-blue-600" />
-          <h1 className="text-lg font-medium text-gray-900">Tickets</h1>
+          <Ticket className="w-6 h-6 text-blue-600" />
+          <h1 className="text-xl font-semibold text-gray-900">Tickets</h1>
           <span className="text-sm text-gray-500">2798</span>
         </div>
         <button className="bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-700">
@@ -364,9 +324,9 @@ const App: React.FC = () => {
 
   const renderAirsyncView = () => (
     <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-6">
-        <Settings className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-        <h1 className="text-xl font-medium text-gray-900 mb-2">AirSync from Zendesk</h1>
+      <div className="text-center mb-8">
+        <Settings className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">AirSync from Zendesk</h1>
         <p className="text-sm text-gray-600">
           Sync your existing Zendesk data with DevRev to maintain continuity.
         </p>
@@ -420,9 +380,9 @@ const App: React.FC = () => {
 
   const renderKnowledgeBaseView = () => (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-6">
-        <BookOpen className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-        <h1 className="text-xl font-medium text-gray-900 mb-2">Knowledge Base</h1>
+      <div className="text-center mb-8">
+        <BookOpen className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">Knowledge Base</h1>
         <p className="text-sm text-gray-600">
           Manage your support articles and documentation.
         </p>
@@ -463,9 +423,9 @@ const App: React.FC = () => {
 
   const renderArticleAnalyticsView = () => (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-6">
-        <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-        <h1 className="text-xl font-medium text-gray-900 mb-2">Article Analytics</h1>
+      <div className="text-center mb-8">
+        <BarChart3 className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">Article Analytics</h1>
         <p className="text-sm text-gray-600">
           Track performance and engagement of your knowledge base articles.
         </p>
@@ -536,10 +496,10 @@ const App: React.FC = () => {
 
   const renderCurrentView = () => {
     switch (currentPage) {
-      case 'get-started':
+      case 'primary-goal':
         return renderPrimaryGoalSelection();
-      case 'setup-step1':
-        return renderSetupStep1();
+      case 'get-started':
+        return renderSetupStep();
       case 'trails':
         return renderTrailsView();
       case 'tickets':
@@ -578,7 +538,7 @@ const App: React.FC = () => {
       {/* Left Sidebar */}
       <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
         <div className="p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">DevRev</h2>
+          <h2 className="text-lg font-semibold text-gray-900">DevRev Support</h2>
         </div>
 
         <nav className="flex-1 p-4">
@@ -610,33 +570,33 @@ const App: React.FC = () => {
               <span>Account</span>
             </button>
 
-            {/* Get Started */}
+            {/* Primary Goal */}
             <button
               onClick={() => {
-                setCurrentPage('get-started');
-                setActiveView('get-started');
+                setCurrentPage('primary-goal');
+                setActiveView('primary-goal');
               }}
               className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                activeView === 'get-started' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                activeView === 'primary-goal' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              <Play className="w-4 h-4 mr-3" />
-              <span>Get Started</span>
+              <Target className="w-4 h-4 mr-3" />
+              <span>Primary Goal</span>
             </button>
 
-            {/* Setup Step 1 */}
+            {/* Get Started */}
             {primaryGoalComplete && (
               <button
                 onClick={() => {
-                  setCurrentPage('setup-step1');
-                  setActiveView('setup-step1');
+                  setCurrentPage('get-started');
+                  setActiveView('setup');
                 }}
                 className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                  activeView === 'setup-step1' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                  activeView === 'setup' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                <Settings className="w-4 h-4 mr-3" />
-                <span>{step1Complete ? 'Step 1 Complete' : 'Step 1: Setup Trails'}</span>
+                <Play className="w-4 h-4 mr-3" />
+                <span>{step1Complete ? 'Continue Setup' : 'Get Started'}</span>
               </button>
             )}
           </div>
