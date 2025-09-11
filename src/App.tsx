@@ -276,6 +276,7 @@ function App() {
                     <div className="text-sm text-gray-600">• ticket.assignee</div>
                   </div>
                 </div>
+               <>
                 <div>
                   <h5 className="font-medium text-gray-900 mb-2">DevRev Fields</h5>
                   <div className="space-y-2">
