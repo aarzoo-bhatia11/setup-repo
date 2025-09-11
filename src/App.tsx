@@ -30,7 +30,6 @@ function App() {
   const [showCustomConnectorModal, setShowCustomConnectorModal] = useState(false);
   const [connectorGenerated, setConnectorGenerated] = useState(false);
   const [connectorRequirements, setConnectorRequirements] = useState('');
-  const [connectorGenerated, setConnectorGenerated] = useState(false);
   const [showWorkSections, setShowWorkSections] = useState(false);
 
   // Step 3 states
