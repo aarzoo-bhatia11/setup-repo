@@ -28,6 +28,7 @@ function App() {
   const [airsyncInProgress, setAirsyncInProgress] = useState(false);
   const [airsyncCompleted, setAirsyncCompleted] = useState(false);
   const [showCustomConnectorModal, setShowCustomConnectorModal] = useState(false);
+  const [connectorGenerated, setConnectorGenerated] = useState(false);
   const [connectorRequirements, setConnectorRequirements] = useState('');
   const [connectorGenerated, setConnectorGenerated] = useState(false);
   const [showWorkSections, setShowWorkSections] = useState(false);
@@ -324,17 +325,67 @@ function App() {
 
         {!connectorGenerated ? (
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Describe your data source and requirements
-              </label>
-              <textarea
-                value={connectorRequirements}
-                onChange={(e) => setConnectorRequirements(e.target.value)}
-                placeholder="E.g., I need to sync customer data from our internal CRM system. It has REST APIs for customers, tickets, and interactions. I need to map customer.email to contact.email and ticket.subject to work.title..."
-                className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            
+            {!connectorGenerated ? (
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    a) Authorize your tool through Email:
+                  </label>
+                  <input
+                    type="email"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your email address"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    b) Type your Password:
+                  </label>
+                  <input
+                    type="password"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your password"
+                  />
+                </div>
               />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    c) Provide your API Documentation:
+                  </label>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Obtain the official API documentation of the external system. This is the primary source of information about how to connect and interact with the system.
+                  </p>
+                  <textarea
+                    className="w-full h-24 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Paste API documentation URL or details..."
+                  />
+                </div>
             </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    d) Select sync type:
+                  </label>
+                  <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Choose sync type...</option>
+                    <option value="1-time">1-time import: Migrate data from an external source to DevRev.</option>
+                    <option value="1-way">1-way sync: Keep data in sync from an external source to DevRev.</option>
+                    <option value="2-way">2-way sync: Synchronize data bidirectionally between DevRev and an external source.</option>
+                  </select>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Code Generated Successfully!</h3>
+                  <p className="text-gray-600">Your custom connector has been generated and is ready for testing.</p>
+                </div>
+              </div>
+            )}
             <div className="flex justify-end space-x-3">
               <button 
                 onClick={() => setShowCustomConnectorModal(false)}
@@ -350,8 +401,11 @@ function App() {
                     ? 'bg-black hover:bg-gray-800 text-white' 
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
+              <button 
+                onClick={() => setConnectorGenerated(!connectorGenerated)}
+                className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800"
               >
-                Generate Connector
+                {connectorGenerated ? 'Test Connector' : 'Generate Connector'}
               </button>
             </div>
           </div>
