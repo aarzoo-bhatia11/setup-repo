@@ -1705,89 +1705,291 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">D</span>
-            </div>
-            <div>
-              <h1 className="font-semibold text-gray-900">DevRev</h1>
-              <p className="text-xs text-gray-500">Support</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Success Notification */}
+      {showNotification && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-3">
+          <CheckCircle2 className="h-5 w-5" />
+          <span>
+            {trailsGenerated && !step2Completed && "Trails generated successfully! Check the 'Trails' section in the navigation."}
+            {step2Completed && "Data import completed! New vistas have been added to your workspace."}
+          </span>
         </div>
+      )}
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-1">
-            {[
-              { id: 'get-started', label: 'Get Started', icon: null },
-              { id: 'tickets', label: 'Tickets', icon: Ticket },
-              { id: 'conversations', label: 'Conversations', icon: MessageSquare },
-              { id: 'trails', label: 'Trails', icon: Route },
-              { id: 'active-ticket-tracker', label: 'Active Ticket Tracker', icon: null },
-              { id: 'article-analytics', label: 'Article Analytics', icon: null },
-              { id: 'conversations', label: 'Conversations', icon: null },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setCurrentPage(item.id)}
-                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                    currentPage === item.id
-                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  {Icon && <Icon className="h-4 w-4" />}
-                  <span className="text-sm font-medium">{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </nav>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-medium">U</span>
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">User</p>
-              <p className="text-xs text-gray-500">user@company.com</p>
-            </div>
-            <button className="p-1 text-gray-400 hover:text-gray-600">
-              <Settings className="h-4 w-4" />
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <button className="text-gray-600 hover:text-gray-800 transition-colors">
+              <ChevronLeft className="h-5 w-5" />
             </button>
+            <div className="flex items-center space-x-2">
+              <Settings className="h-5 w-5 text-gray-600" />
+              <span className="text-sm font-medium text-gray-600">Settings</span>
+            </div>
           </div>
+          <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            Contact us
+          </button>
         </div>
       </div>
 
-      {/* Main Content */}
-      {currentPage === 'get-started' && <GetStartedPage />}
-      {currentPage === 'tickets' && <TicketsPage />}
-      {currentPage === 'trails' && <TrailsPage />}
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-64 bg-white border-r border-gray-200 min-h-screen">
+          <div className="p-6">
+            <nav className="space-y-1">
+              <div className="space-y-3">
+                <a 
+                  href="#" 
+                  onClick={() => setCurrentPage('general')}
+                  className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                  <User className="h-4 w-4" />
+                  <span>General</span>
+                </a>
+                <a 
+                  href="#" 
+                  onClick={() => setCurrentPage('account')}
+                  className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Account</span>
+                </a>
+                <a 
+                  href="#" 
+                  onClick={() => setCurrentPage('get-started')}
+                  className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-lg border-l-4 ${
+                    currentPage === 'get-started' 
+                      ? 'text-gray-900 bg-blue-50 border-blue-500 font-medium' 
+                      : 'text-gray-700 hover:bg-gray-50 border-transparent'
+                  }`}
+                >
+                  <Play className={`h-4 w-4 ${currentPage === 'get-started' ? 'text-blue-600' : ''}`} />
+                  <span>Get Started</span>
+                </a>
+              </div>
+
+              {/* Product Section */}
+              {trailsGenerated && (
+                <div className="pt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Product
+                  </h3>
+                  <a 
+                    href="#" 
+                    onClick={() => setCurrentPage('trails')}
+                    className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-lg ${
+                      currentPage === 'trails' 
+                        ? 'text-gray-900 bg-gray-100 font-medium' 
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <GitBranch className="h-4 w-4" />
+                    <span>Trails</span>
+                  </a>
+                </div>
+              )}
+
+              {/* Work Section */}
+              {showWorkSections && (
+                <div className="pt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Work
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Ticket className="h-4 w-4" />
+                      <span>Tickets</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      <span>Conversations</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Customers Section */}
+              {showWorkSections && (
+                <div className="pt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Customers
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <UserCheck className="h-4 w-4" />
+                      <span>Contacts</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Building2 className="h-4 w-4" />
+                      <span>Accounts</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Customization Section */}
+              {step3Completed && (
+                <div className="pt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Customization
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Sliders3 className="h-4 w-4" />
+                      <span>Object Customization</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Workflow className="h-4 w-4" />
+                      <span>Stage Customization</span>
+                      <span className="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">BETA</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <FileText className="h-4 w-4" />
+                      <span>Tags</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <FileText className="h-4 w-4" />
+                      <span>Templates</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Channels Section */}
+              {step4Completed && (
+                <div className="pt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Channels
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Mail className="h-4 w-4" />
+                      <span>Email</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      <span>Slack</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Smartphone className="h-4 w-4" />
+                      <span>Whatsapp</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Bot className="h-4 w-4" />
+                      <span>Live Chat widget</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Globe2 className="h-4 w-4" />
+                      <span>Customer Portal</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Phone className="h-4 w-4" />
+                      <span>Telephony</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Workflows & Routing Section */}
+              {step5Completed && (
+                <div className="pt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Workflows & Routing
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Workflow className="h-4 w-4" />
+                      <span>Workflows</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Route className="h-4 w-4" />
+                      <span>Routing</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Snap-ins Section */}
+              {step7Completed && (
+                <div className="pt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Extensions
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Plug className="h-4 w-4" />
+                      <span>Snap-ins</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        {currentPage === 'trails' ? <TrailsPage /> : 
+         setupCompleted ? <TicketsPage /> : <GetStartedPage />}
+      </div>
 
       {/* Modals */}
       {showVideoModal && <VideoModal />}
       {showAirsyncModal && <AirsyncModal />}
       {showCustomConnectorModal && <CustomConnectorModal />}
-
-      {/* Notification */}
-      {showNotification && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-          <div className="flex items-center space-x-2">
-            <CheckCircle2 className="h-5 w-5" />
-            <span>Step completed successfully!</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
