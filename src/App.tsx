@@ -1755,7 +1755,8 @@ function App() {
                   onClick={() => setCurrentPage('account')}
                 >
                   {step1Complete ? 'Continue Setup' : 'Get Started'}
-                </button>
+                  <span>Account</span>
+                </a>
                 <a 
                   href="#" 
                   onClick={() => setCurrentPage('get-started')}
