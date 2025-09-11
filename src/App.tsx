@@ -10,7 +10,7 @@ import {
   BarChart3,
   FileText,
   HelpCircle,
-  Settings
+  Zap
 } from 'lucide-react';
 
 const App = () => {
@@ -21,10 +21,9 @@ const App = () => {
   const [selectedIntegrations, setSelectedIntegrations] = useState<string[]>([]);
 
   const menuItems = [
-    { id: 'general', label: 'General', icon: Settings },
     { id: 'account', label: 'Account', icon: User },
     { id: 'get-started', label: 'Get Started', icon: Play },
-    { id: 'trails', label: 'Trails', icon: Users },
+    { id: 'trails', label: 'Trails', icon: Zap },
     { id: 'tickets', label: 'Tickets', icon: Ticket },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'knowledge', label: 'Knowledge Base', icon: FileText },
@@ -63,7 +62,7 @@ const App = () => {
           <div className="bg-gray-50 rounded-lg p-6 mb-8">
             <div className="flex items-center justify-center mb-4">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md">
-                <Play className="w-8 h-8 text-blue-600 ml-1" />
+                <Play className="w-8 h-8 text-black ml-1" />
               </div>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">What are trails?</h3>
@@ -120,7 +119,7 @@ const App = () => {
                     value={websiteUrl}
                     onChange={(e) => setWebsiteUrl(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://paytm.com"
+                    placeholder="eg. devrev.ai"
                   />
                 </div>
               </div>
@@ -235,15 +234,6 @@ const App = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'general':
-        return (
-          <div className="max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">General Settings</h1>
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <p className="text-gray-600">General settings and preferences coming soon...</p>
-            </div>
-          </div>
-        );
       case 'account':
         return (
           <div className="max-w-2xl mx-auto">
@@ -327,7 +317,7 @@ const App = () => {
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-center px-6 py-3 text-left hover:bg-gray-50 transition-colors ${
                   activeTab === item.id 
-                    ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' 
+                    ? 'bg-gray-50 text-gray-900 border-r-2 border-black' 
                     : 'text-gray-600'
                 }`}
               >
