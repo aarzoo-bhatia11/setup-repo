@@ -1745,8 +1745,8 @@ function App() {
                   href="#" 
                   onClick={() => setCurrentPage('general')}
                   className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                  }`}
                 >
+                  <User className="h-4 w-4" />
                   <span>General</span>
                 </a>
                   className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
@@ -1766,7 +1766,6 @@ function App() {
                   <Play className="w-4 h-4 mr-3" />
                   <span>{step1Complete ? 'Continue Setup' : 'Get Started'}</span>
                 </button>
-              </div>
               </div>
                 <a 
                   href="#" 
