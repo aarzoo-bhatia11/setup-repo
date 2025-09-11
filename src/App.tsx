@@ -286,7 +286,7 @@ function App() {
                     <div className="text-sm text-gray-600">→ work.owned_by</div>
                   </div>
                 </div>
-              </>
+              </div>
             </div>
           </div>
 
