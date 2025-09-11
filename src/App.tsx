@@ -1,1150 +1,1523 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { 
-  Settings, 
-  ChevronLeft, 
-  User, 
-  Bell, 
-  Zap, 
-  LifeBuoy, 
-  Plug, 
+  CheckCircle, 
+  GitBranch, 
   Users, 
-  BookOpen,
-  CheckCircle2,
-  Circle,
-  Play,
-  ExternalLink,
-  ArrowRight,
-  Globe,
-  Loader2,
-  Search,
-  Filter,
-  ChevronDown,
-  MoreHorizontal,
-  Mail,
-  Building,
-  Database,
-  MessageSquare,
-  Ticket,
-  UserCheck,
-  Building2,
+  Building2, 
+  Settings, 
+  Ticket, 
+  MessageSquare, 
+  UserCheck, 
+  Phone, 
+  Mail, 
+  MessageCircle, 
+  Globe, 
+  Headphones,
+  ChevronLeft,
+  ChevronRight,
+  Upload,
+  Star,
+  Clock,
+  BarChart3,
+  Zap,
+  Shield,
+  Eye,
+  Bot,
   Plus,
   X,
-  Check,
-  AlertCircle,
-  Eye,
-  EyeOff,
-  Code,
-  Download,
-  GitBranch,
-  Hexagon,
-  Phone,
-  Slack,
-  MessageCircle,
-  Monitor,
-  Copy,
-  Palette,
-  Settings as SettingsIcon
+  ArrowRight,
+  FileText,
+  Calendar,
+  Target,
+  Workflow,
+  Code
 } from 'lucide-react';
 
-function App() {
-  const [websiteUrl, setWebsiteUrl] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [trailsGenerated, setTrailsGenerated] = useState(false);
-  const [step2Completed, setStep2Completed] = useState(false);
-  const [step3Completed, setStep3Completed] = useState(false);
-  const [step4Completed, setStep4Completed] = useState(false);
-  const [step2CarouselIndex, setStep2CarouselIndex] = useState(0);
-  const [emailProvider, setEmailProvider] = useState('');
-  const [showNotification, setShowNotification] = useState(false);
-  const [currentPage, setCurrentPage] = useState('get-started');
-  const [focusedStep, setFocusedStep] = useState<number | null>(null);
-  const step2Ref = useRef<HTMLDivElement | null>(null);
-  const [showChannelsModal, setShowChannelsModal] = useState(false);
-  const [selectedChannels, setSelectedChannels] = useState<{[k: string]: boolean}>({
-    Email: false,
-    Slack: false,
-    Whatsapp: false,
-    'Live Chat widget': false,
-    'Customer Portal': false,
-    Telephony: false,
-  });
-  const [channelCreateMode, setChannelCreateMode] = useState<{[k: string]: 'Tickets' | 'Conversations' | 'Both'}>({
-    Email: 'Both',
-    'Live Chat widget': 'Both',
-  });
-  const step1Ref = useRef<HTMLDivElement | null>(null);
-  const step3Ref = useRef<HTMLDivElement | null>(null);
-  const step4Ref = useRef<HTMLDivElement | null>(null);
-  
-  // New state for the revamped flow
-  const [selectedEmailProvider, setSelectedEmailProvider] = useState('');
-  const [isGoogleSignedIn, setIsGoogleSignedIn] = useState(false);
-  const [selectedImportSource, setSelectedImportSource] = useState('');
-  const [showAirsyncModal, setShowAirsyncModal] = useState(false);
-  const [airsyncInProgress, setAirsyncInProgress] = useState(false);
-  const [airsyncCompleted, setAirsyncCompleted] = useState(false);
-  const [showCustomConnectorModal, setShowCustomConnectorModal] = useState(false);
-  const [connectorRequirements, setConnectorRequirements] = useState('');
-  const [connectorGenerated, setConnectorGenerated] = useState(false);
-  const [selectedTicketFields, setSelectedTicketFields] = useState<{[k: string]: boolean}>({
-    'Payment Method': true,
-    'Transaction ID': true,
-    'Account Type': true,
-    'KYC Status': true,
-    'Issue Category': true,
-    'Priority Level': true,
-  });
-  const [showWorkSections, setShowWorkSections] = useState(false);
-  const [showCustomizationSection, setShowCustomizationSection] = useState(false);
-  const [showChannelsSection, setShowChannelsSection] = useState(false);
-  const [selectedObjectType, setSelectedObjectType] = useState('Tickets');
-  const [copyFromAirsynced, setCopyFromAirsynced] = useState(true);
+interface StepProps {
+  currentStep: number;
+  completedSteps: number[];
+  onStepComplete: (step: number) => void;
+}
 
-  const handleGenerateTrails = async () => {
-    if (!websiteUrl) return;
+const App: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [showSetupComplete, setShowSetupComplete] = useState(false);
+
+  const handleStepComplete = (step: number) => {
+    if (!completedSteps.includes(step)) {
+      setCompletedSteps([...completedSteps, step]);
+    }
     
-    setIsGenerating(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    setIsGenerating(false);
-    setTrailsGenerated(true);
-    setShowNotification(true);
-    // Focus Step 2 within Get Started
-    setFocusedStep(2);
-    setTimeout(() => {
-      if (step2Ref.current) {
-        step2Ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        step2Ref.current.focus();
-      }
-    }, 50);
-    
-    // Hide notification after 4 seconds
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 4000);
-  };
-
-  const handleGoogleSignIn = async () => {
-    // Simulate Google OAuth flow
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsGoogleSignedIn(true);
-    setStep2CarouselIndex(2); // Move to portal creation step
-  };
-
-  const handleImportSourceSelect = (source: string) => {
-    setSelectedImportSource(source);
-    if (source === 'custom') {
-      setShowCustomConnectorModal(true);
+    if (step < 7) {
+      setCurrentStep(step + 1);
     } else {
-      setShowAirsyncModal(true);
+      setShowSetupComplete(true);
     }
   };
 
-  const handleStartAirsync = async () => {
-    setShowAirsyncModal(false);
-    setAirsyncInProgress(true);
-    setShowWorkSections(true);
-    
-    // Simulate airsync progress
-    await new Promise(resolve => setTimeout(resolve, 4000));
-    setAirsyncInProgress(false);
-    setAirsyncCompleted(true);
-    setStep2Completed(true);
-    setFocusedStep(3);
-    
-    // Show completion notification
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 4000);
+  const isStepVisible = (step: number) => {
+    return currentStep === step && !completedSteps.includes(step);
   };
 
-  const handleGenerateConnector = async () => {
-    if (!connectorRequirements) return;
-    
-    // Simulate connector generation
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setConnectorGenerated(true);
-    setStep2Completed(true);
-    setShowWorkSections(true);
-    setFocusedStep(3);
-  };
-
-  const handleStep3Complete = () => {
-    setStep3Completed(true);
-    setShowCustomizationSection(true);
-    setFocusedStep(4);
-  };
-
-  const handleStep4Complete = () => {
-    setStep4Completed(true);
-    setShowChannelsSection(true);
-  };
-
-  const VideoModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowVideoModal(false)}>
-      <div className="bg-white rounded-xl p-6 max-w-4xl w-full mx-4" onClick={e => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold text-gray-900">What are trails?</h3>
-          <button 
-            onClick={() => setShowVideoModal(false)}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-        <div className="aspect-video">
-          <iframe
-            width="100%"
-            height="100%"
-            src="https://www.youtube.com/embed/FevhNu0gUyA"
-            title="What are trails?"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="rounded-lg"
-          ></iframe>
-        </div>
-      </div>
-    </div>
-  );
-
-  const AirsyncModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowAirsyncModal(false)}>
-      <div className="bg-white rounded-xl p-8 max-w-5xl w-full mx-4 max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-8">
-          <h3 className="text-2xl font-semibold text-gray-900">Configure {selectedImportSource} Airsync</h3>
-          <button 
-            onClick={() => setShowAirsyncModal(false)}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="h-6 w-6" />
-          </button>
+  return (
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
+              <span className="text-white font-bold text-sm">D</span>
+            </div>
+            <span className="font-semibold text-gray-900">DevRev</span>
+          </div>
         </div>
 
-        <div className="space-y-8">
-          <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Objects to Airsync</h4>
-            <p className="text-gray-600 mb-6">
-              The following objects will be airsynced from {selectedImportSource} to DevRev:
-            </p>
-            
-            <div className="grid grid-cols-2 gap-4">
-              {['Tickets', 'Users', 'Organizations', 'Articles', 'Comments', 'Attachments'].map((object) => (
-                <div key={object} className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
-                  <input type="checkbox" defaultChecked className="h-4 w-4 text-blue-600 rounded" />
-                  <span className="text-sm font-medium text-gray-900">{object}</span>
-                </div>
-              ))}
+        <nav className="flex-1 p-4 space-y-1">
+          {/* Product Section */}
+          <div className="mb-6">
+            <div className="flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-700">
+              <GitBranch className="w-4 h-4" />
+              <span>Product</span>
+            </div>
+            <div className="ml-6 mt-2 space-y-1">
+              <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Trails</div>
             </div>
           </div>
 
-          <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Data Mapping Preview</h4>
-            <div className="bg-gray-50 rounded-xl p-6">
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <h5 className="font-semibold text-gray-900 mb-4">{selectedImportSource} Fields</h5>
-                  <div className="space-y-3">
-                    <div className="text-sm text-gray-700 font-mono">• ticket.subject</div>
-                    <div className="text-sm text-gray-700 font-mono">• ticket.description</div>
-                    <div className="text-sm text-gray-700 font-mono">• ticket.priority</div>
-                    <div className="text-sm text-gray-700 font-mono">• ticket.status</div>
-                    <div className="text-sm text-gray-700 font-mono">• ticket.assignee</div>
-                  </div>
-                </div>
-                <div>
-                  <h5 className="font-semibold text-gray-900 mb-4">DevRev Fields</h5>
-                  <div className="space-y-3">
-                    <div className="text-sm text-gray-700 font-mono">→ work.title</div>
-                    <div className="text-sm text-gray-700 font-mono">→ work.body</div>
-                    <div className="text-sm text-gray-700 font-mono">→ work.priority</div>
-                    <div className="text-sm text-gray-700 font-mono">→ work.stage</div>
-                    <div className="text-sm text-gray-700 font-mono">→ work.owned_by</div>
-                  </div>
-                </div>
+          {/* Work Section - appears after step 2 */}
+          {(completedSteps.includes(2) || currentStep > 2) && (
+            <div className="mb-6 pt-8">
+              <div className="flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-700">
+                <Ticket className="w-4 h-4" />
+                <span>Work</span>
+              </div>
+              <div className="ml-6 mt-2 space-y-1">
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Tickets</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Conversations</div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="flex justify-end space-x-4">
-            <button 
-              onClick={() => setShowAirsyncModal(false)}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium"
-            >
-              Cancel
-            </button>
-            <button 
-              onClick={handleStartAirsync}
-              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-            >
-              Start Airsync
-            </button>
+          {/* Customers Section - appears after step 2 */}
+          {(completedSteps.includes(2) || currentStep > 2) && (
+            <div className="mb-6 pt-8">
+              <div className="flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-700">
+                <Users className="w-4 h-4" />
+                <span>Customers</span>
+              </div>
+              <div className="ml-6 mt-2 space-y-1">
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Contacts</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Accounts</div>
+              </div>
+            </div>
+          )}
+
+          {/* Customization Section - appears after step 3 */}
+          {(completedSteps.includes(3) || currentStep > 3) && (
+            <div className="mb-6 pt-8">
+              <div className="flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-700">
+                <Settings className="w-4 h-4" />
+                <span>Customization</span>
+              </div>
+              <div className="ml-6 mt-2 space-y-1">
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Object Customization</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer flex items-center">
+                  Stage Customization
+                  <span className="ml-2 px-2 py-0.5 text-xs bg-black text-white rounded">BETA</span>
+                </div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Tags</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Templates</div>
+              </div>
+            </div>
+          )}
+
+          {/* Channels Section - appears after step 4 */}
+          {(completedSteps.includes(4) || currentStep > 4) && (
+            <div className="mb-6 pt-8">
+              <div className="flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-700">
+                <MessageSquare className="w-4 h-4" />
+                <span>Channels</span>
+              </div>
+              <div className="ml-6 mt-2 space-y-1">
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Email</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Slack</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">WhatsApp</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Live Chat Widget</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Customer Portal</div>
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Telephony</div>
+              </div>
+            </div>
+          )}
+
+          {/* Workflows & Routing Section - appears after step 5 */}
+          {(completedSteps.includes(5) || currentStep > 5) && (
+            <div className="mb-6 pt-8">
+              <div className="flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-700">
+                <Workflow className="w-4 h-4" />
+                <span>Workflows</span>
+              </div>
+              <div className="ml-6 mt-2 space-y-1">
+                <div className="px-2 py-1 text-sm text-gray-600 hover:text-gray-900 cursor-pointer">Routing</div>
+              </div>
+            </div>
+          )}
+
+          {/* Snap-ins Section - appears after step 7 */}
+          {completedSteps.includes(7) && (
+            <div className="mb-6 pt-8">
+              <div className="flex items-center space-x-2 px-2 py-1 text-sm font-medium text-gray-700">
+                <Code className="w-4 h-4" />
+                <span>Snap-ins</span>
+              </div>
+            </div>
+          )}
+        </nav>
+
+        <div className="p-4 border-t border-gray-200">
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center text-white text-xs">
+              {completedSteps.length}
+            </div>
+            <span>Setup {completedSteps.length} / 7</span>
           </div>
         </div>
       </div>
-    </div>
-  );
 
-  const CustomConnectorModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowCustomConnectorModal(false)}>
-      <div className="bg-white rounded-xl p-8 max-w-3xl w-full mx-4" onClick={e => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-8">
-          <h3 className="text-2xl font-semibold text-gray-900">Create Custom Airsync Connector</h3>
-          <button 
-            onClick={() => setShowCustomConnectorModal(false)}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-
-        {!connectorGenerated ? (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                Describe your data source and requirements
-              </label>
-              <textarea
-                value={connectorRequirements}
-                onChange={(e) => setConnectorRequirements(e.target.value)}
-                placeholder="E.g., I need to sync customer data from our internal CRM system. It has REST APIs for customers, tickets, and interactions. I need to map customer.email to contact.email and ticket.subject to work.title..."
-                className="w-full h-40 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
-              />
-            </div>
-            <div className="flex justify-end space-x-4">
-              <button 
-                onClick={() => setShowCustomConnectorModal(false)}
-                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleGenerateConnector}
-                disabled={!connectorRequirements.trim()}
-                className={`px-8 py-3 rounded-lg font-medium transition-colors ${
-                  connectorRequirements.trim() 
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                Generate Connector
-              </button>
-            </div>
-          </div>
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        {showSetupComplete ? (
+          <TicketsView />
         ) : (
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4 p-6 bg-green-50 border border-green-200 rounded-xl">
-              <CheckCircle2 className="h-8 w-8 text-green-600 flex-shrink-0" />
-              <div>
-                <h4 className="font-semibold text-green-900 text-lg">Connector Generated Successfully!</h4>
-                <p className="text-green-700">Your custom airsync connector has been created.</p>
-              </div>
-            </div>
-            <div className="bg-gray-50 rounded-xl p-6">
-              <div className="flex items-center space-x-4 mb-4">
-                <Code className="h-6 w-6 text-gray-600" />
-                <span className="font-semibold text-gray-900 text-lg">Generated Snap-in</span>
-              </div>
-              <p className="text-gray-600 mb-4">
-                Clone the project in your code editor to review and publish as your DevRev snap-in.
-              </p>
-              <button className="flex items-center space-x-3 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium">
-                <Download className="h-5 w-5" />
-                <span>Clone Project</span>
-              </button>
-            </div>
-            <div className="flex justify-end">
-              <button 
-                onClick={() => setShowCustomConnectorModal(false)}
-                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-              >
-                Continue Setup
-              </button>
-            </div>
+          <div className="p-8">
+            {isStepVisible(1) && <Step1 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
+            {isStepVisible(2) && <Step2 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
+            {isStepVisible(3) && <Step3 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
+            {isStepVisible(4) && <Step4 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
+            {isStepVisible(5) && <Step5 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
+            {isStepVisible(6) && <Step6 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
+            {isStepVisible(7) && <Step7 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
           </div>
         )}
       </div>
     </div>
   );
+};
 
-  const TrailsPage = () => (
-    <div className="flex-1 p-6">
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-lg font-semibold text-gray-900">Trails</h1>
-            <div className="relative">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+// Step 1: Setup Trails (unchanged)
+const Step1: React.FC<StepProps> = ({ onStepComplete }) => {
+  const [websiteUrl, setWebsiteUrl] = useState('');
+
+  const handleSubmit = () => {
+    if (websiteUrl.trim()) {
+      onStepComplete(1);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Setup Trails</h1>
+        <p className="text-lg text-gray-600">Let's start by connecting your website to create a comprehensive support experience.</p>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Website URL
+          </label>
+          <input
+            type="url"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            placeholder="https://your-website.com"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+          />
+        </div>
+
+        <button
+          onClick={handleSubmit}
+          disabled={!websiteUrl.trim()}
+          className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        >
+          Continue Setup
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Step 2: Import Data
+const Step2: React.FC<StepProps> = ({ onStepComplete }) => {
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [showAirsyncModal, setShowAirsyncModal] = useState(false);
+  const [showCustomConnector, setShowCustomConnector] = useState(false);
+  const [airsyncProgress, setAirsyncProgress] = useState(0);
+  const [showProgress, setShowProgress] = useState(false);
+
+  const platforms = [
+    { id: 'zendesk', name: 'Zendesk' },
+    { id: 'salesforce', name: 'Salesforce' },
+    { id: 'hubspot', name: 'HubSpot' },
+    { id: 'custom', name: 'Create own airsync connector' }
+  ];
+
+  const handlePlatformSelect = (platformId: string) => {
+    setSelectedPlatform(platformId);
+    if (platformId === 'zendesk') {
+      setShowAirsyncModal(true);
+    } else if (platformId === 'custom') {
+      setShowCustomConnector(true);
+    }
+  };
+
+  const startAirsync = () => {
+    setShowAirsyncModal(false);
+    setShowProgress(true);
+    
+    // Simulate progress
+    const interval = setInterval(() => {
+      setAirsyncProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => onStepComplete(2), 1000);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 500);
+  };
+
+  if (showCustomConnector) {
+    return (
+      <div className="max-w-4xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Create Custom Airsync Connector</h1>
+          <p className="text-lg text-gray-600">Tell us about your current support system and we'll create a custom connector for you.</p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                What support platform are you currently using?
+              </label>
               <input
                 type="text"
-                placeholder="Type to search"
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64 text-sm"
+                placeholder="e.g., Custom CRM, Freshdesk, ServiceNow..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                What data do you want to import?
+              </label>
+              <textarea
+                rows={4}
+                placeholder="Describe the tickets, customers, conversations, or other data you'd like to sync..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Do you have API documentation or endpoints?
+              </label>
+              <input
+                type="url"
+                placeholder="https://api.yourplatform.com/docs"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+              />
+            </div>
+
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="font-medium text-green-800">Connector Created Successfully!</span>
+              </div>
+              <p className="text-green-700 text-sm">
+                We've created a custom airsync connector for your platform. Clone the project in your code editor to review and publish as your DevRev snap-in.
+              </p>
+            </div>
+
+            <button
+              onClick={() => onStepComplete(2)}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors"
+            >
+              Continue to Next Step
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (showProgress) {
+    return (
+      <div className="max-w-2xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Airsync in Progress</h1>
+          <p className="text-lg text-gray-600">We're importing your data from Zendesk and transforming it for DevRev.</p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="mb-6">
+            <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Progress</span>
+              <span>{airsyncProgress}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-black h-2 rounded-full transition-all duration-500"
+                style={{ width: `${airsyncProgress}%` }}
               />
             </div>
           </div>
-          <div className="flex items-center space-x-3 text-sm text-gray-600">
-            <span>Show</span>
-            <button className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <span>Owner</span>
-              <ChevronDown className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
 
-        {/* Mindmap container */}
-        <div className="relative h-[600px] bg-gradient-to-br from-gray-50 to-white">
-          {/* Left column: Products */}
-          <div className="absolute left-16 top-20 space-y-8">
-            {["DevRev Studio","DevRev AgentOS","DevRevU","The Book of DevRev","DevRev Corp","DevRev Community","DevRev Apps"].map((name, idx) => (
-              <div key={idx} className="bg-white rounded-xl p-4 shadow-sm border border-purple-200 w-56 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <div className="w-4 h-4 bg-purple-500 rounded" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">{name}</h3>
-                    <p className="text-xs text-gray-500">Sample owner +1</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Center column: Capabilities */}
-          <div className="absolute left-[28rem] top-28 space-y-12">
-            {["Agent Platform","Knowledge Graph","Analytics Platform","Agent and Workflow Studio","Observability, performance a..."]
-              .map((name, idx) => (
-              <div key={idx} className="bg-white rounded-xl p-4 shadow-sm border border-blue-200 w-56 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <div className="w-4 h-4 bg-blue-500 rounded" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">{name}</h3>
-                    <p className="text-xs text-gray-500">Owner +1</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Right column: Features */}
-          <div className="absolute right-16 top-20 space-y-8">
-            {["Workflows and Skills: Observa...","Agent creation and Personaliz...","Workflow Controls","Workflow Builder UX"]
-              .map((name, idx) => (
-              <div key={idx} className="bg-white rounded-xl p-3 shadow-sm border border-gray-200 w-64 hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-3">
-                  <div className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <div className="w-3.5 h-3.5 bg-gray-400 rounded" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">{name}</h3>
-                    <p className="text-xs text-gray-500">Owner</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Curved connections */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            <path d="M 320 140 C 360 140, 370 160, 400 185" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-            <path d="M 320 220 C 355 220, 370 225, 400 240" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-            <path d="M 320 300 C 350 300, 370 295, 400 295" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-            <path d="M 320 380 C 355 380, 370 360, 400 340" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-
-            <path d="M 610 185 C 640 150, 660 150, 700 130" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-            <path d="M 610 245 C 640 210, 660 205, 700 185" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-            <path d="M 610 305 C 640 270, 660 260, 700 245" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-            <path d="M 610 365 C 640 330, 660 315, 700 305" stroke="#e2e8f0" strokeWidth="2" fill="none" />
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
-
-  const GetStartedPage = () => (
-    <div className="flex-1 p-8">
-      <div className="max-w-6xl">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center space-x-3 mb-3">
-            <span className="text-3xl font-bold tracking-tight text-gray-900">DevRev</span>
-          </div>
-          <p className="text-gray-700 font-medium text-lg">Let us Setup DevRev Support for you</p>
-        </div>
-
-        {/* Support Settings Section */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-          <div className="px-8 py-6 border-b border-gray-200 bg-gray-50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <h2 className="text-xl font-semibold text-gray-900">Support Settings</h2>
-              </div>
-              <div className="flex items-center space-x-3 text-sm text-gray-600">
-                <span>{[trailsGenerated, step2Completed, step3Completed, step4Completed].filter(Boolean).length}/4 completed</span>
-                <div className="w-20 bg-gray-200 rounded-full h-2.5">
-                  <div className={`bg-blue-600 h-2.5 rounded-full transition-all duration-500`} style={{
-                    width: `${([trailsGenerated, step2Completed, step3Completed, step4Completed].filter(Boolean).length / 4) * 100}%`
-                  }}></div>
-                </div>
-              </div>
+          <div className="space-y-3 text-sm">
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <span>Connected to Zendesk</span>
             </div>
-          </div>
-
-          <div className="p-8">
-            {/* Step 1: Setup Trails - Hide when completed */}
-            {!trailsGenerated && (
-              <div ref={step1Ref} className="border border-gray-200 rounded-xl p-8 mb-6 hover:border-gray-300 transition-colors">
-                <div className="flex items-start space-x-5">
-                  <div className="flex-shrink-0 mt-1">
-                    <Circle className="h-7 w-7 text-gray-300" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900">Start by setting up trails</h3>
-                      <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">Step 1</span>
-                    </div>
-                    <p className="text-gray-600 mb-6 text-base">
-                      Let's start by creating a mind-map of your product to track your support tickets to relevant product parts
-                    </p>
-                    
-                    {/* Video Thumbnail */}
-                    <div className="mb-8">
-                      <div 
-                        className="relative bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 cursor-pointer hover:from-blue-100 hover:to-purple-100 transition-all duration-200 border border-blue-200"
-                        onClick={() => setShowVideoModal(true)}
-                      >
-                        <div className="flex items-center space-x-5">
-                          <div className="flex-shrink-0">
-                            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                              <Play className="h-10 w-10 text-white ml-1" />
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900 mb-2 text-lg">What are trails?</h4>
-                            <p className="text-gray-600">Learn how trails help organize your support workflow</p>
-                          </div>
-                          <ExternalLink className="h-5 w-5 text-gray-400 ml-auto" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Website URL Input */}
-                    <div className="space-y-6">
-                      <div>
-                        <label htmlFor="website-url" className="block text-sm font-semibold text-gray-900 mb-3">
-                          Website URL
-                        </label>
-                        <div className="flex space-x-4">
-                          <div className="flex-1 relative">
-                            <Globe className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-                            <input
-                              type="text"
-                              id="website-url"
-                              autoFocus
-                              value={websiteUrl}
-                              onChange={(e) => setWebsiteUrl(e.target.value)}
-                              placeholder="https://paytm.com"
-                              className="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
-                            />
-                          </div>
-                          <button
-                            onClick={handleGenerateTrails}
-                            disabled={websiteUrl.trim().length < 1 || isGenerating}
-                            className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-3 ${
-                              websiteUrl.trim().length < 1 || isGenerating
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
-                            }`}
-                          >
-                            {isGenerating ? (
-                              <>
-                                <Loader2 className="h-5 w-5 animate-spin" />
-                                <span>Generating...</span>
-                              </>
-                            ) : (
-                              <>
-                                <span>Auto-generate trails</span>
-                                <ArrowRight className="h-5 w-5" />
-                              </>
-                            )}
-                          </button>
-                        </div>
-                        <p className="text-sm text-gray-500 mt-3">
-                          DevRev will analyze your website and automatically create relevant trails for your product
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Import Data - Hide when completed */}
-            {trailsGenerated && !step2Completed && (
-              <div
-                ref={step2Ref}
-                tabIndex={-1}
-                className={`border rounded-xl p-8 mb-6 transition-colors ${
-                  focusedStep === 2 ? 'border-blue-300 ring-2 ring-blue-100 bg-blue-50/30' : 'border-gray-200'
-                }`}
-              >
-                <div className="flex items-start space-x-5">
-                  <div className="flex-shrink-0 mt-1">
-                    <Circle className="h-7 w-7 text-gray-300" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900">Import Data from existing support applications</h3>
-                      <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">Step 2</span>
-                    </div>
-                    <p className="text-gray-600 mb-6 text-base">
-                      Connect your existing support tools to import tickets, customers, and historical data
-                    </p>
-
-                    {!airsyncInProgress && (
-                      <div className="space-y-6">
-                        <p className="text-sm font-semibold text-gray-900">Select your current support platform:</p>
-                        <div className="grid grid-cols-2 gap-4">
-                          {[
-                            { name: 'Zendesk', color: 'border-gray-300 hover:border-gray-400' },
-                            { name: 'Salesforce', color: 'border-blue-300 hover:border-blue-400' },
-                            { name: 'Hubspot', color: 'border-orange-300 hover:border-orange-400' },
-                            { name: 'Create own airsync connector', color: 'border-purple-300 hover:border-purple-400' }
-                          ].map((platform) => (
-                            <button
-                              key={platform.name}
-                              onClick={() => handleImportSourceSelect(platform.name === 'Create own airsync connector' ? 'custom' : platform.name)}
-                              className={`p-6 border-2 rounded-xl hover:bg-gray-50 transition-all duration-200 ${platform.color} ${
-                                selectedImportSource === platform.name ? 'border-blue-500 bg-blue-50' : ''
-                              }`}
-                            >
-                              <div className="text-center">
-                                <span className="font-semibold text-gray-900 text-base">{platform.name}</span>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {airsyncInProgress && (
-                      <div className="space-y-6">
-                        <div className="flex items-center space-x-4 p-6 bg-blue-50 border border-blue-200 rounded-xl">
-                          <Loader2 className="h-8 w-8 text-blue-600 animate-spin flex-shrink-0" />
-                          <div>
-                            <h4 className="font-semibold text-blue-900 text-lg">Airsync in Progress</h4>
-                            <p className="text-blue-700">Importing data from {selectedImportSource}...</p>
-                          </div>
-                        </div>
-                        <div className="bg-gray-50 rounded-xl p-6">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="font-semibold text-gray-900">Transformation Progress</span>
-                            <span className="text-gray-600 font-medium">75%</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-3">
-                            <div className="bg-blue-600 h-3 rounded-full w-3/4 transition-all duration-300"></div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Customize tickets and conversations - Hide when completed */}
-            {step2Completed && !step3Completed && (
-              <div
-                ref={step3Ref}
-                className={`border rounded-xl p-8 mb-6 transition-colors ${
-                  focusedStep === 3 ? 'border-blue-300 ring-2 ring-blue-100 bg-blue-50/30' : 'border-gray-200'
-                }`}
-              >
-                <div className="flex items-start space-x-5">
-                  <div className="flex-shrink-0 mt-1">
-                    <Circle className="h-7 w-7 text-gray-300" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900">Customize tickets and conversations</h3>
-                      <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">Step 3</span>
-                    </div>
-                    <p className="text-gray-600 mb-6 text-base">
-                      Based on your website (paytm.com), we've detected you're in the <strong>Financial Services</strong> industry. 
-                      We recommend adding these fields to your tickets:
-                    </p>
-
-                    <div className="space-y-6">
-                      {/* Object Type Selection */}
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900 mb-4">Select object type to customize:</p>
-                        <div className="flex space-x-3">
-                          {['Tickets', 'Conversations', 'Contacts'].map((type) => (
-                            <button
-                              key={type}
-                              onClick={() => setSelectedObjectType(type)}
-                              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                                selectedObjectType === type
-                                  ? 'bg-blue-600 text-white'
-                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
-                            >
-                              {type}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Copy from Airsynced Option */}
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                        <div className="flex items-start space-x-3">
-                          <input
-                            type="checkbox"
-                            checked={copyFromAirsynced}
-                            onChange={(e) => setCopyFromAirsynced(e.target.checked)}
-                            className="h-5 w-5 text-blue-600 mt-0.5"
-                          />
-                          <div>
-                            <h4 className="font-semibold text-blue-900 mb-2">Copy configuration from airsynced {selectedObjectType.toLowerCase()}</h4>
-                            <p className="text-blue-700 text-sm">
-                              Apply the same field configuration from your {selectedImportSource} {selectedObjectType.toLowerCase()} to all {selectedObjectType.toLowerCase()} subtypes in DevRev.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {selectedObjectType === 'Tickets' && (
-                        <div>
-                          <p className="text-sm font-semibold text-gray-900 mb-4">Recommended ticket fields for Financial Services:</p>
-                          <div className="grid grid-cols-2 gap-4">
-                            {Object.entries(selectedTicketFields).map(([field, selected]) => (
-                              <label key={field} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                                <input
-                                  type="checkbox"
-                                  checked={selected}
-                                  onChange={(e) => setSelectedTicketFields({
-                                    ...selectedTicketFields,
-                                    [field]: e.target.checked
-                                  })}
-                                  className="h-4 w-4 text-blue-600"
-                                />
-                                <span className="text-sm text-gray-700 font-medium">{field}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex justify-end">
-                        <button
-                          onClick={handleStep3Complete}
-                          className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
-                        >
-                          Apply Configuration
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 4: Select channels - Hide when completed */}
-            {step3Completed && !step4Completed && (
-              <div
-                ref={step4Ref}
-                className={`border rounded-xl p-8 transition-colors ${
-                  focusedStep === 4 ? 'border-blue-300 ring-2 ring-blue-100 bg-blue-50/30' : 'border-gray-200'
-                }`}
-              >
-                <div className="flex items-start space-x-5">
-                  <div className="flex-shrink-0 mt-1">
-                    <Circle className="h-7 w-7 text-gray-300" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900">Select channels to create tickets or conversations</h3>
-                      <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">Step 4</span>
-                    </div>
-                    <p className="text-gray-600 mb-6 text-base">
-                      Choose channels and minimal configuration to get started
-                    </p>
-
-                    <div className="space-y-6">
-                      {step2CarouselIndex === 0 && (
-                        <div className="space-y-6">
-                          <p className="text-sm font-semibold text-gray-900">Which email provider do you use?</p>
-                          <div className="grid grid-cols-2 gap-6">
-                            <button
-                              onClick={() => {
-                                setSelectedEmailProvider('gmail');
-                                setStep2CarouselIndex(1);
-                              }}
-                              className={`p-8 border-2 rounded-xl hover:bg-gray-50 transition-all duration-200 ${
-                                selectedEmailProvider === 'gmail' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
-                              }`}
-                            >
-                              <div className="flex flex-col items-center space-y-4">
-                                <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-yellow-500 rounded-xl flex items-center justify-center">
-                                  <Mail className="h-8 w-8 text-white" />
-                                </div>
-                                <span className="font-semibold text-gray-900 text-lg">Gmail</span>
-                              </div>
-                            </button>
-                            <button
-                              onClick={() => {
-                                setSelectedEmailProvider('custom');
-                                setStep2CarouselIndex(1);
-                              }}
-                              className={`p-8 border-2 rounded-xl hover:bg-gray-50 transition-all duration-200 ${
-                                selectedEmailProvider === 'custom' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
-                              }`}
-                            >
-                              <div className="flex flex-col items-center space-y-4">
-                                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                                  <Building className="h-8 w-8 text-white" />
-                                </div>
-                                <span className="font-semibold text-gray-900 text-lg">Custom Domain</span>
-                              </div>
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {step2CarouselIndex === 1 && selectedEmailProvider === 'gmail' && !isGoogleSignedIn && (
-                        <div className="space-y-6">
-                          <div className="text-center p-8 border border-gray-200 rounded-xl">
-                            <div className="w-20 h-20 bg-gradient-to-r from-red-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-6">
-                              <Mail className="h-10 w-10 text-white" />
-                            </div>
-                            <h4 className="text-xl font-semibold text-gray-900 mb-3">Connect your Gmail</h4>
-                            <p className="text-gray-600 mb-6">Sign in with Google to connect your Gmail account</p>
-                            <button
-                              onClick={handleGoogleSignIn}
-                              className="flex items-center space-x-4 px-8 py-4 border border-gray-300 rounded-xl hover:bg-gray-50 mx-auto transition-colors"
-                            >
-                              <div className="w-6 h-6 bg-gradient-to-r from-red-500 to-yellow-500 rounded"></div>
-                              <span className="font-semibold">Sign in with Google</span>
-                            </button>
-                          </div>
-                          <div className="flex justify-between">
-                            <button
-                              onClick={() => setStep2CarouselIndex(0)}
-                              className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors"
-                            >
-                              Back
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {step2CarouselIndex === 2 && isGoogleSignedIn && (
-                        <div className="space-y-6">
-                          <div className="flex items-center space-x-4 p-6 bg-green-50 border border-green-200 rounded-xl">
-                            <CheckCircle2 className="h-8 w-8 text-green-600 flex-shrink-0" />
-                            <div>
-                              <h4 className="font-semibold text-green-900 text-lg">Gmail Connected Successfully</h4>
-                              <p className="text-green-700">Your Gmail account has been connected.</p>
-                            </div>
-                          </div>
-                          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                            <h4 className="font-semibold text-blue-900 mb-3 text-lg">Portal Created & Knowledge Base Updated</h4>
-                            <p className="text-blue-700 mb-4">
-                              Based on your website design (paytm.com), we've automatically created a customer portal that matches your brand. 
-                              Your portal has been updated with the airsynced knowledge base from {selectedImportSource}.
-                            </p>
-                            <div className="bg-white rounded-xl border p-6 mb-4">
-                              <div className="flex items-center space-x-3 mb-3">
-                                <div className="w-6 h-6 bg-blue-600 rounded"></div>
-                                <span className="font-semibold text-gray-900">Paytm Support Portal</span>
-                              </div>
-                              <p className="text-sm text-gray-600 mb-4">Auto-generated based on your website theme and colors</p>
-                              <div className="bg-gray-50 rounded-lg p-4">
-                                <div className="text-xs text-gray-500 mb-2">Portal Preview</div>
-                                <div className="bg-blue-600 h-2 rounded mb-2"></div>
-                                <div className="space-y-1">
-                                  <div className="bg-gray-300 h-1 rounded w-3/4"></div>
-                                  <div className="bg-gray-300 h-1 rounded w-1/2"></div>
-                                  <div className="bg-gray-300 h-1 rounded w-2/3"></div>
-                                </div>
-                              </div>
-                            </div>
-                            <p className="text-sm text-blue-700">
-                              You can customize the portal further through Portal Settings.
-                            </p>
-                          </div>
-                          <div className="flex justify-end">
-                            <button
-                              onClick={handleStep4Complete}
-                              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
-                            >
-                              Complete Setup
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Completion Message */}
-            {step4Completed && (
-              <div className="text-center p-8 bg-green-50 border border-green-200 rounded-xl">
-                <CheckCircle2 className="h-16 w-16 text-green-600 mx-auto mb-4" />
-                <h3 className="text-2xl font-semibold text-green-900 mb-2">Setup Complete!</h3>
-                <p className="text-green-700 text-lg">
-                  Your DevRev support system is now ready. You can access all features through the navigation menu.
-                </p>
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <span>Importing tickets and conversations</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <span>Creating new vistas</span>
+            </div>
+            {airsyncProgress === 100 && (
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-4 h-4 text-green-600" />
+                <span>Transformation complete!</span>
               </div>
             )}
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Success Notification */}
-      {showNotification && (
-        <div className="fixed top-6 right-6 bg-green-600 text-white px-8 py-4 rounded-xl shadow-lg z-50 flex items-center space-x-4">
-          <CheckCircle2 className="h-6 w-6 flex-shrink-0" />
-          <span className="font-medium">
-            {trailsGenerated && !step2Completed && "Trails generated successfully! Check the 'Trails' section in the navigation."}
-            {step2Completed && "Data import completed! New vistas have been added to your workspace."}
-          </span>
-        </div>
-      )}
+    <div className="max-w-4xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Import Data from Existing Support Applications</h1>
+        <p className="text-lg text-gray-600">Connect your existing support platform to import tickets, customers, and conversations.</p>
+      </div>
 
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-5">
-            <button className="text-gray-600 hover:text-gray-800 transition-colors">
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            <div className="flex items-center space-x-3">
-              <Settings className="h-6 w-6 text-gray-600" />
-              <span className="font-semibold text-gray-600">Settings</span>
+      <div className="grid grid-cols-2 gap-6">
+        {platforms.map((platform) => (
+          <div
+            key={platform.id}
+            onClick={() => handlePlatformSelect(platform.id)}
+            className={`bg-white rounded-lg shadow-sm border-2 p-6 cursor-pointer transition-all hover:shadow-md ${
+              selectedPlatform === platform.id ? 'border-black' : 'border-gray-200 hover:border-gray-300'
+            }`}
+          >
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{platform.name}</h3>
+              {platform.id === 'custom' && (
+                <p className="text-sm text-gray-600">Create a custom connector for your platform</p>
+              )}
             </div>
           </div>
-          <button className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
-            Contact us
+        ))}
+      </div>
+
+      {/* Airsync Modal */}
+      {showAirsyncModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-gray-900">Configure Zendesk Airsync</h2>
+                <button
+                  onClick={() => setShowAirsyncModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Objects to Airsync</h3>
+                <div className="space-y-3">
+                  {['Tickets', 'Users', 'Organizations', 'Groups', 'Custom Fields'].map((object) => (
+                    <label key={object} className="flex items-center space-x-3">
+                      <input type="checkbox" defaultChecked className="rounded border-gray-300 text-black focus:ring-black" />
+                      <span className="text-gray-700">{object}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Data Mapping Preview</h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">Zendesk</h4>
+                      <ul className="space-y-1 text-gray-600">
+                        <li>• Tickets → DevRev Tickets</li>
+                        <li>• Users → DevRev Contacts</li>
+                        <li>• Organizations → DevRev Accounts</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-2">DevRev</h4>
+                      <ul className="space-y-1 text-gray-600">
+                        <li>• Subtype: Zendesk</li>
+                        <li>• Custom fields preserved</li>
+                        <li>• Relationships maintained</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={startAirsync}
+                className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors"
+              >
+                Start Airsync
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Step 3: Customize Objects
+const Step3: React.FC<StepProps> = ({ onStepComplete }) => {
+  const [selectedObject, setSelectedObject] = useState('tickets');
+  const [selectedFields, setSelectedFields] = useState<string[]>([]);
+
+  const objectTypes = [
+    { id: 'tickets', name: 'Tickets', icon: Ticket },
+    { id: 'conversations', name: 'Conversations', icon: MessageSquare },
+    { id: 'contacts', name: 'Contacts', icon: UserCheck },
+    { id: 'accounts', name: 'Accounts', icon: Building2 }
+  ];
+
+  const recommendedFields = {
+    tickets: [
+      { id: 'payment_method', name: 'Payment Method', type: 'Single Select', visibility: 'Public', actionable: true, description: 'Customer payment method used' },
+      { id: 'transaction_id', name: 'Transaction ID', type: 'Text', visibility: 'Internal', actionable: false, description: 'Unique transaction identifier' },
+      { id: 'account_type', name: 'Account Type', type: 'Single Select', visibility: 'Public', actionable: true, description: 'Type of customer account' },
+      { id: 'kyc_status', name: 'KYC Status', type: 'Single Select', visibility: 'Internal', actionable: true, description: 'Know Your Customer verification status' },
+      { id: 'dispute_amount', name: 'Dispute Amount', type: 'Number', visibility: 'Internal', actionable: false, description: 'Amount in dispute if applicable' }
+    ],
+    conversations: [
+      { id: 'channel_source', name: 'Channel Source', type: 'Single Select', visibility: 'Public', actionable: false, description: 'Origin channel of conversation' },
+      { id: 'sentiment_score', name: 'Sentiment Score', type: 'Number', visibility: 'Internal', actionable: false, description: 'AI-analyzed customer sentiment' },
+      { id: 'escalation_level', name: 'Escalation Level', type: 'Single Select', visibility: 'Public', actionable: true, description: 'Current escalation status' }
+    ],
+    contacts: [
+      { id: 'customer_tier', name: 'Customer Tier', type: 'Single Select', visibility: 'Public', actionable: true, description: 'Customer value tier' },
+      { id: 'verification_status', name: 'Verification Status', type: 'Single Select', visibility: 'Internal', actionable: true, description: 'Account verification status' },
+      { id: 'preferred_language', name: 'Preferred Language', type: 'Single Select', visibility: 'Public', actionable: false, description: 'Customer communication preference' }
+    ],
+    accounts: [
+      { id: 'business_type', name: 'Business Type', type: 'Single Select', visibility: 'Public', actionable: false, description: 'Type of business entity' },
+      { id: 'compliance_status', name: 'Compliance Status', type: 'Single Select', visibility: 'Internal', actionable: true, description: 'Regulatory compliance status' },
+      { id: 'risk_score', name: 'Risk Score', type: 'Number', visibility: 'Internal', actionable: true, description: 'Calculated risk assessment' }
+    ]
+  };
+
+  const handleFieldToggle = (fieldId: string) => {
+    setSelectedFields(prev => 
+      prev.includes(fieldId) 
+        ? prev.filter(id => id !== fieldId)
+        : [...prev, fieldId]
+    );
+  };
+
+  const handleContinue = () => {
+    onStepComplete(3);
+  };
+
+  return (
+    <div className="max-w-6xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Customize Tickets and Conversations</h1>
+        <p className="text-lg text-gray-600">
+          Based on your industry (Financial Services), we recommend adding these fields to enhance your support workflow.
+        </p>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="border-b border-gray-200">
+          <nav className="flex space-x-8 px-6">
+            {objectTypes.map((type) => {
+              const Icon = type.icon;
+              return (
+                <button
+                  key={type.id}
+                  onClick={() => setSelectedObject(type.id)}
+                  className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm ${
+                    selectedObject === type.id
+                      ? 'border-black text-black'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{type.name}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="p-6">
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                Recommended Fields for {objectTypes.find(t => t.id === selectedObject)?.name}
+              </h3>
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="rounded border-gray-300 text-black focus:ring-black" />
+                <span className="text-sm text-gray-600">Copy from airsynced {selectedObject}</span>
+              </label>
+            </div>
+            
+            <div className="space-y-4">
+              {recommendedFields[selectedObject as keyof typeof recommendedFields]?.map((field) => (
+                <div key={field.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedFields.includes(field.id)}
+                        onChange={() => handleFieldToggle(field.id)}
+                        className="mt-1 rounded border-gray-300 text-black focus:ring-black"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{field.name}</h4>
+                        <p className="text-sm text-gray-600 mt-1">{field.description}</p>
+                        <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                          <span className="flex items-center space-x-1">
+                            <FileText className="w-3 h-3" />
+                            <span>Type: {field.type}</span>
+                          </span>
+                          <span className="flex items-center space-x-1">
+                            <Eye className="w-3 h-3" />
+                            <span>Visibility: {field.visibility}</span>
+                          </span>
+                          {field.actionable && (
+                            <span className="flex items-center space-x-1">
+                              <Zap className="w-3 h-3" />
+                              <span>Actionable</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={handleContinue}
+            className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors"
+          >
+            Continue to Channel Setup
           </button>
         </div>
       </div>
+    </div>
+  );
+};
 
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-72 bg-white border-r border-gray-200 min-h-screen">
-          <div className="p-8">
-            <nav className="space-y-2">
-              <div className="space-y-1">
-                <a 
-                  href="#" 
-                  onClick={() => setCurrentPage('general')}
-                  className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <User className="h-5 w-5" />
-                  <span>General</span>
-                </a>
-                <a 
-                  href="#" 
-                  onClick={() => setCurrentPage('account')}
-                  className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <User className="h-5 w-5" />
-                  <span>Account</span>
-                </a>
-                <a 
-                  href="#" 
-                  onClick={() => setCurrentPage('get-started')}
-                  className={`flex items-center space-x-3 px-4 py-3 text-sm rounded-lg border-l-4 transition-colors ${
-                    currentPage === 'get-started' 
-                      ? 'text-gray-900 bg-blue-50 border-blue-500 font-semibold' 
-                      : 'text-gray-700 hover:bg-gray-50 border-transparent'
-                  }`}
-                >
-                  <Play className={`h-5 w-5 ${currentPage === 'get-started' ? 'text-blue-600' : ''}`} />
-                  <span>Get Started</span>
-                </a>
-              </div>
+// Step 4: Select Channels (Multi-step carousel)
+const Step4: React.FC<StepProps> = ({ onStepComplete }) => {
+  const [carouselStep, setCarouselStep] = useState(1);
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
 
-              {/* Product Section */}
-              {trailsGenerated && (
-                <div className="pt-8">
-                  <h3 className="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
-                    Product
-                  </h3>
-                  <a 
-                    href="#" 
-                    onClick={() => setCurrentPage('trails')}
-                    className={`flex items-center space-x-3 px-4 py-3 text-sm rounded-lg transition-colors ${
-                      currentPage === 'trails' 
-                        ? 'text-gray-900 bg-gray-100 font-semibold' 
-                        : 'text-gray-700 hover:bg-gray-50'
+  const channels = [
+    { id: 'email', name: 'Email', icon: Mail },
+    { id: 'slack', name: 'Slack', icon: MessageCircle },
+    { id: 'whatsapp', name: 'WhatsApp', icon: Phone },
+    { id: 'livechat', name: 'Live Chat Widget', icon: MessageSquare },
+    { id: 'portal', name: 'Customer Portal', icon: Globe },
+    { id: 'telephony', name: 'Telephony', icon: Headphones }
+  ];
+
+  const handleChannelToggle = (channelId: string) => {
+    setSelectedChannels(prev => 
+      prev.includes(channelId) 
+        ? prev.filter(id => id !== channelId)
+        : [...prev, channelId]
+    );
+  };
+
+  const handleNextCarousel = () => {
+    if (carouselStep < 4) {
+      setCarouselStep(carouselStep + 1);
+    } else {
+      onStepComplete(4);
+    }
+  };
+
+  const handlePrevCarousel = () => {
+    if (carouselStep > 1) {
+      setCarouselStep(carouselStep - 1);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl">
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Setup Communication Channels</h1>
+            <p className="text-lg text-gray-600">Configure how customers can reach your support team.</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-500">Step {carouselStep} of 4</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        {/* Carousel Step 1: Channel Selection */}
+        {carouselStep === 1 && (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Select Communication Channels</h2>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              {channels.map((channel) => {
+                const Icon = channel.icon;
+                return (
+                  <div
+                    key={channel.id}
+                    onClick={() => handleChannelToggle(channel.id)}
+                    className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                      selectedChannels.includes(channel.id)
+                        ? 'border-black bg-gray-50'
+                        : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <GitBranch className="h-5 w-5" />
-                    <span>Trails</span>
-                  </a>
-                </div>
-              )}
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedChannels.includes(channel.id)}
+                        onChange={() => {}}
+                        className="rounded border-gray-300 text-black focus:ring-black"
+                      />
+                      <Icon className="w-5 h-5 text-gray-600" />
+                      <span className="font-medium text-gray-900">{channel.name}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <button
+              onClick={handleNextCarousel}
+              disabled={selectedChannels.length === 0}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+            >
+              Continue
+            </button>
+          </div>
+        )}
 
-              {/* Work Section */}
-              {showWorkSections && (
-                <div className="pt-8">
-                  <h3 className="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
-                    Work
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Ticket className="h-5 w-5" />
-                      <span>Tickets</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <MessageSquare className="h-5 w-5" />
-                      <span>Conversations</span>
-                    </a>
+        {/* Carousel Step 2: Provider Selection */}
+        {carouselStep === 2 && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Select Email Provider</h2>
+              <button onClick={handlePrevCarousel} className="text-gray-500 hover:text-gray-700">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-6 mb-6">
+              <div
+                onClick={() => setSelectedProvider('gmail')}
+                className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
+                  selectedProvider === 'gmail' ? 'border-black' : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="text-center">
+                  <Mail className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900">Gmail</h3>
+                  <p className="text-sm text-gray-600 mt-2">Connect your Gmail account</p>
+                </div>
+              </div>
+              <div
+                onClick={() => setSelectedProvider('other')}
+                className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
+                  selectedProvider === 'other' ? 'border-black' : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="text-center">
+                  <Settings className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900">Other Connectors</h3>
+                  <p className="text-sm text-gray-600 mt-2">Custom email configuration</p>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={handleNextCarousel}
+              disabled={!selectedProvider}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+            >
+              Continue
+            </button>
+          </div>
+        )}
+
+        {/* Carousel Step 3: Email Setup */}
+        {carouselStep === 3 && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Email Account Connected</h2>
+              <button onClick={handlePrevCarousel} className="text-gray-500 hover:text-gray-700">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Mail className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-blue-800">Email Forwarding Required</span>
+                </div>
+                <p className="text-blue-700 text-sm">
+                  Please set up email forwarding in your email server to: support@devrev.ai
+                </p>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-green-800">Email Account Connected Successfully</span>
+                </div>
+                <p className="text-green-700 text-sm mb-3">
+                  We've connected your email account and set up default templates for you:
+                </p>
+                <ul className="text-green-700 text-sm space-y-1 ml-4">
+                  <li>• Default email signature created</li>
+                  <li>• Auto-reply message configured</li>
+                  <li>• Test message sent successfully</li>
+                </ul>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h3 className="font-medium text-gray-900 mb-2">Sample Email Template</h3>
+                <div className="text-sm text-gray-600 space-y-2">
+                  <p>Hi [Customer Name],</p>
+                  <p>Thank you for contacting our support team. We've received your request and will respond within 24 hours.</p>
+                  <p>Best regards,<br />Support Team<br />Paytm Customer Support</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleNextCarousel}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors mt-6"
+            >
+              Continue to Portal Setup
+            </button>
+          </div>
+        )}
+
+        {/* Carousel Step 4: Portal Setup */}
+        {carouselStep === 4 && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Customer Portal Setup</h2>
+              <button onClick={handlePrevCarousel} className="text-gray-500 hover:text-gray-700">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-green-800">Portal Created Successfully</span>
+                </div>
+                <p className="text-green-700 text-sm">
+                  Your customer portal has been set up according to your website theme with airsynced knowledge base articles.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-medium text-gray-900 mb-3">Portal Preview</h3>
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
+                    <div className="flex items-center space-x-2 mb-4">
+                      <span className="font-bold text-lg">Paytm</span>
+                      <span className="text-blue-200 text-sm">24x7 Help</span>
+                    </div>
+                    <h1 className="text-2xl font-bold mb-2">Help & Support</h1>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search questions, keywords, topics"
+                        className="w-full px-4 py-2 rounded-lg text-gray-900"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  <div className="p-6 bg-white">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Browse Support Articles</h2>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center p-4">
+                        <Shield className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                        <h3 className="font-medium text-gray-900">Privacy & Security</h3>
+                        <p className="text-sm text-gray-600 mt-1">How to ensure safe and secure money transfer?</p>
+                      </div>
+                      <div className="text-center p-4">
+                        <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                        <h3 className="font-medium text-gray-900">Recharges & Bill Payments</h3>
+                        <p className="text-sm text-gray-600 mt-1">Mobile recharge initiated but order still under process</p>
+                      </div>
+                      <div className="text-center p-4">
+                        <Globe className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                        <h3 className="font-medium text-gray-900">Travel</h3>
+                        <p className="text-sm text-gray-600 mt-1">Want to cancel your flight ticket? Follow these steps</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Customers Section */}
-              {showWorkSections && (
-                <div className="pt-8">
-                  <h3 className="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
-                    Customers
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <UserCheck className="h-5 w-5" />
-                      <span>Contacts</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Building2 className="h-5 w-5" />
-                      <span>Accounts</span>
-                    </a>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-600 mb-2">Drag and drop to customize portal design</p>
+                <p className="text-sm text-gray-500">Upload screenshots of your previous portal for color theme and logos</p>
+              </div>
+
+              <p className="text-sm text-gray-600">
+                You can further customize your portal through the portal settings after setup completion.
+              </p>
+            </div>
+
+            <button
+              onClick={handleNextCarousel}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors mt-6"
+            >
+              Complete Channel Setup
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Step 5: Assignment Rules
+const Step5: React.FC<StepProps> = ({ onStepComplete }) => {
+  const [selectedRule, setSelectedRule] = useState<string | null>(null);
+
+  const rules = [
+    { id: 'round-robin', name: 'Round Robin', description: 'Distribute tickets evenly among team members' },
+    { id: 'load-balancing', name: 'Load Balancing', description: 'Assign based on current workload' },
+    { id: 'random', name: 'Random Distribution', description: 'Randomly assign tickets to available agents' },
+    { id: 'capacity', name: 'Capacity-based Allocation', description: 'Assign based on agent capacity and skills' }
+  ];
+
+  const handleContinue = () => {
+    onStepComplete(5);
+  };
+
+  return (
+    <div className="max-w-4xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Add Assignment Rules for Tickets and Conversations</h1>
+        <p className="text-lg text-gray-600">Choose how tickets and conversations should be automatically assigned to your team members.</p>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="space-y-4 mb-6">
+          {rules.map((rule) => (
+            <div
+              key={rule.id}
+              onClick={() => setSelectedRule(rule.id)}
+              className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                selectedRule === rule.id ? 'border-black bg-gray-50' : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="flex items-start space-x-3">
+                <input
+                  type="radio"
+                  checked={selectedRule === rule.id}
+                  onChange={() => {}}
+                  className="mt-1 text-black focus:ring-black"
+                />
+                <div>
+                  <h3 className="font-medium text-gray-900">{rule.name}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{rule.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {selectedRule && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center space-x-2 mb-2">
+              <Bot className="w-5 h-5 text-green-600" />
+              <span className="font-medium text-green-800">AI Configuration Complete</span>
+            </div>
+            <p className="text-green-700 text-sm">
+              AI has automatically configured the snap-in and workflow for {rules.find(r => r.id === selectedRule)?.name.toLowerCase()} assignment.
+            </p>
+          </div>
+        )}
+
+        <button
+          onClick={handleContinue}
+          disabled={!selectedRule}
+          className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        >
+          Continue to Support Metrics
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Step 6: Support Metrics
+const Step6: React.FC<StepProps> = ({ onStepComplete }) => {
+  const [carouselStep, setCarouselStep] = useState(1);
+
+  const handleNextCarousel = () => {
+    if (carouselStep < 3) {
+      setCarouselStep(carouselStep + 1);
+    } else {
+      onStepComplete(6);
+    }
+  };
+
+  const handlePrevCarousel = () => {
+    if (carouselStep > 1) {
+      setCarouselStep(carouselStep - 1);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl">
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Setup Support Metrics</h1>
+            <p className="text-lg text-gray-600">Configure SLA, CSAT surveys, and ticket insights for your support team.</p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-500">Step {carouselStep} of 3</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        {/* SLA Setup */}
+        {carouselStep === 1 && (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">SLA Configuration</h2>
+            
+            <div className="space-y-6">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-green-800">Default SLA Created</span>
+                </div>
+                <p className="text-green-700 text-sm">
+                  We've created default SLA metrics and schedules based on industry best practices.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="font-medium text-gray-900 mb-3">SLA Metrics</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">First Response:</span>
+                      <span className="font-medium">2 hours</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Resolution Time:</span>
+                      <span className="font-medium">24 hours</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">High Priority:</span>
+                      <span className="font-medium">1 hour</span>
+                    </div>
                   </div>
                 </div>
-              )}
 
-              {/* Customization Section */}
-              {showCustomizationSection && (
-                <div className="pt-8">
-                  <h3 className="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
-                    Customization
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <SettingsIcon className="h-5 w-5" />
-                      <span>Commands</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Hexagon className="h-5 w-5" />
-                      <span>Object Customization</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <GitBranch className="h-5 w-5" />
-                      <span>Stage Customization</span>
-                      <span className="px-2 py-0.5 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">BETA</span>
-                    </a>
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="font-medium text-gray-900 mb-3">Organization Schedule</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Business Hours:</span>
+                      <span className="font-medium">9 AM - 6 PM</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Time Zone:</span>
+                      <span className="font-medium">IST</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Working Days:</span>
+                      <span className="font-medium">Mon - Fri</span>
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* Channels Section */}
-              {showChannelsSection && (
-                <div className="pt-8">
-                  <h3 className="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
-                    Channels
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Mail className="h-5 w-5" />
-                      <span>Email</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Slack className="h-5 w-5" />
-                      <span>Slack</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <MessageCircle className="h-5 w-5" />
-                      <span>Whatsapp</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Monitor className="h-5 w-5" />
-                      <span>Live Chat widget</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Globe className="h-5 w-5" />
-                      <span>Customer Portal</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <Phone className="h-5 w-5" />
-                      <span>Telephony</span>
-                    </a>
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h3 className="font-medium text-gray-900 mb-3">SLA Policies</h3>
+                <div className="space-y-3">
+                  <label className="flex items-center space-x-3">
+                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-black focus:ring-black" />
+                    <span className="text-sm text-gray-700">Auto-escalate overdue tickets</span>
+                  </label>
+                  <label className="flex items-center space-x-3">
+                    <input type="checkbox" defaultChecked className="rounded border-gray-300 text-black focus:ring-black" />
+                    <span className="text-sm text-gray-700">Send SLA breach notifications</span>
+                  </label>
+                  <label className="flex items-center space-x-3">
+                    <input type="checkbox" className="rounded border-gray-300 text-black focus:ring-black" />
+                    <span className="text-sm text-gray-700">Pause SLA during customer response</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleNextCarousel}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors mt-6"
+            >
+              Continue to CSAT Setup
+            </button>
+          </div>
+        )}
+
+        {/* CSAT Setup */}
+        {carouselStep === 2 && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">CSAT Survey Configuration</h2>
+              <button onClick={handlePrevCarousel} className="text-gray-500 hover:text-gray-700">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-green-800">CSAT Survey Deployed</span>
+                </div>
+                <p className="text-green-700 text-sm">
+                  Customer satisfaction survey has been deployed with standard settings.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="font-medium text-gray-900 mb-3">Survey Settings</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm text-gray-600 mb-1">Trigger</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                        <option>After ticket resolution</option>
+                        <option>24 hours after resolution</option>
+                        <option>Manual trigger</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-600 mb-1">Rating Scale</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                        <option>5-star rating</option>
+                        <option>1-10 scale</option>
+                        <option>Thumbs up/down</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
-              )}
-            </nav>
+
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="font-medium text-gray-900 mb-3">Survey Preview</h3>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-900 mb-2">How was your support experience?</h4>
+                    <div className="flex space-x-2 mb-3">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star key={star} className="w-5 h-5 text-yellow-400 fill-current" />
+                      ))}
+                    </div>
+                    <textarea
+                      placeholder="Tell us more about your experience..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                      rows={2}
+                      readOnly
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleNextCarousel}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors mt-6"
+            >
+              Continue to Ticket Insights
+            </button>
+          </div>
+        )}
+
+        {/* Ticket Insights */}
+        {carouselStep === 3 && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Ticket Insights Configuration</h2>
+              <button onClick={handlePrevCarousel} className="text-gray-500 hover:text-gray-700">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Previous Support Desk Report URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://your-previous-support-desk.com/reports"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Credentials (Optional)
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <BarChart3 className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-blue-800">Auto-Generated Reports</span>
+                </div>
+                <p className="text-blue-700 text-sm mb-3">
+                  DevRev will automatically analyze your previous support data and create corresponding custom reports:
+                </p>
+                <ul className="text-blue-700 text-sm space-y-1 ml-4">
+                  <li>• Ticket volume trends</li>
+                  <li>• Response time analytics</li>
+                  <li>• Customer satisfaction metrics</li>
+                  <li>• Agent performance insights</li>
+                </ul>
+              </div>
+            </div>
+
+            <button
+              onClick={handleNextCarousel}
+              className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors mt-6"
+            >
+              Complete Metrics Setup
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Step 7: Custom Workflows
+const Step7: React.FC<StepProps> = ({ onStepComplete }) => {
+  const [selectedWorkflows, setSelectedWorkflows] = useState<string[]>([]);
+
+  const workflows = [
+    { 
+      id: 'severity-detector', 
+      name: 'Auto-ticket severity detector',
+      description: 'Automatically categorize ticket severity based on content and customer tier'
+    },
+    { 
+      id: 'spam-detector', 
+      name: 'Spam detector',
+      description: 'Identify and filter spam tickets using AI-powered detection'
+    },
+    { 
+      id: 'redact-sensitive', 
+      name: 'Auto-redact sensitive information in tickets and logs',
+      description: 'Automatically detect and redact PII, payment info, and sensitive data'
+    }
+  ];
+
+  const handleWorkflowToggle = (workflowId: string) => {
+    setSelectedWorkflows(prev => 
+      prev.includes(workflowId) 
+        ? prev.filter(id => id !== workflowId)
+        : [...prev, workflowId]
+    );
+  };
+
+  const handleComplete = () => {
+    onStepComplete(7);
+  };
+
+  return (
+    <div className="max-w-4xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Custom Workflows</h1>
+        <p className="text-lg text-gray-600">
+          Have a custom use-case? Let AI create workflows or make changes for you.
+        </p>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Recommended Workflows</h2>
+          <div className="space-y-4">
+            {workflows.map((workflow) => (
+              <div
+                key={workflow.id}
+                onClick={() => handleWorkflowToggle(workflow.id)}
+                className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                  selectedWorkflows.includes(workflow.id)
+                    ? 'border-black bg-gray-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedWorkflows.includes(workflow.id)}
+                    onChange={() => {}}
+                    className="mt-1 rounded border-gray-300 text-black focus:ring-black"
+                  />
+                  <div>
+                    <h3 className="font-medium text-gray-900">{workflow.name}</h3>
+                    <p className="text-sm text-gray-600 mt-1">{workflow.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Main Content */}
-        {currentPage === 'trails' ? <TrailsPage /> : <GetStartedPage />}
-      </div>
+        <div className="border-t border-gray-200 pt-6">
+          <h3 className="font-medium text-gray-900 mb-3">Custom Workflow Request</h3>
+          <textarea
+            placeholder="Describe your custom workflow requirements..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+            rows={3}
+          />
+        </div>
 
-      {/* Modals */}
-      {showVideoModal && <VideoModal />}
-      {showAirsyncModal && <AirsyncModal />}
-      {showCustomConnectorModal && <CustomConnectorModal />}
+        {selectedWorkflows.length > 0 && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-6">
+            <div className="flex items-center space-x-2 mb-2">
+              <Bot className="w-5 h-5 text-green-600" />
+              <span className="font-medium text-green-800">AI Workflows Created</span>
+            </div>
+            <p className="text-green-700 text-sm">
+              {selectedWorkflows.length} workflow{selectedWorkflows.length > 1 ? 's' : ''} have been automatically created and configured.
+            </p>
+          </div>
+        )}
+
+        <button
+          onClick={handleComplete}
+          className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors mt-6"
+        >
+          Complete Setup
+        </button>
+      </div>
     </div>
   );
-}
+};
+
+// Tickets View (Final Screen)
+const TicketsView: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
+                <span className="text-white font-bold text-sm">D</span>
+              </div>
+              <span className="font-semibold text-gray-900">DevRev</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <button className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors">
+              Set up
+            </button>
+            <button className="text-gray-600 hover:text-gray-900 text-sm font-medium">
+              Contact us
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Welcome Banner */}
+      <div className="bg-blue-50 border-b border-blue-200 px-6 py-3">
+        <div className="flex items-center space-x-2">
+          <span className="text-2xl">👋</span>
+          <div>
+            <span className="font-medium text-gray-900">Welcome to DevRev!</span>
+            <span className="text-gray-600 ml-2">Let's begin with the tasks that will help you start using DevRev effectively.</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="px-6 py-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-4">
+            <h1 className="text-2xl font-semibold text-gray-900">Tickets</h1>
+            <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-sm">5</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <button className="p-2 text-gray-400 hover:text-gray-600">
+              <Zap className="w-5 h-5" />
+            </button>
+            <button className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors flex items-center space-x-2">
+              <Plus className="w-4 h-4" />
+              <span>Ticket</span>
+            </button>
+          </div>
+        </div>
+
+        {/* New View Banner */}
+        <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Zap className="w-5 h-5 text-orange-500" />
+            <span className="font-medium text-gray-900">New view headers are here! We have made it more compact and consistent across all our views</span>
+          </div>
+          <button className="text-black font-medium text-sm hover:underline">
+            Try it now
+          </button>
+        </div>
+
+        {/* Tickets List */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <Zap className="w-4 h-4 text-orange-500" />
+              <span>List of all tickets for customer support</span>
+              <button className="ml-auto text-gray-400 hover:text-gray-600">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-500">Work type</span>
+                <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded">Ticket</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-500">Created date</span>
+                <span className="text-gray-700">Last 90 days</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-500">Stage</span>
+                <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded flex items-center space-x-1">
+                  <Clock className="w-3 h-3" />
+                  <span>Queued +5</span>
+                </span>
+              </div>
+              <button className="text-gray-500 hover:text-gray-700">
+                <Plus className="w-4 h-4" />
+              </button>
+              <button className="text-gray-500 hover:text-gray-700 ml-auto">
+                Clear
+              </button>
+            </div>
+          </div>
+
+          {/* Table Header */}
+          <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
+            <div className="grid grid-cols-12 gap-4 text-xs font-medium text-gray-500 uppercase tracking-wide">
+              <div className="col-span-1">Items</div>
+              <div className="col-span-4">Customer Work</div>
+              <div className="col-span-2">Stage</div>
+              <div className="col-span-2">Part</div>
+              <div className="col-span-2">Owner</div>
+              <div className="col-span-1"></div>
+            </div>
+          </div>
+
+          {/* Table Rows */}
+          <div className="divide-y divide-gray-200">
+            {[
+              { id: 'TKT-5', title: 'Issue with Adding New Users to Account', customer: 'dummy...', stage: 'Queued', part: 'Default Product 1', owner: 'Unas...' },
+              { id: 'TKT-4', title: 'Reply to your first Ticket in DevRev', customer: '-', stage: 'Awaiting...', part: 'Default Feature 1', owner: 'DevR...' },
+              { id: 'TKT-3', title: 'When Tickets link to Issues', customer: '-', stage: 'In De...', part: 'Default Feature 1', owner: 'DevR...' },
+              { id: 'TKT-2', title: 'Complete DevRev setup ?', customer: '-', stage: 'Awaiting...', part: 'Default Feature 1', owner: 'DevR...' },
+              { id: 'TKT-1', title: 'Respond on-the-go from DevRev Mobile', customer: '-', stage: 'Awaiting...', part: 'Default Feature 1', owner: 'DevR...' }
+            ].map((ticket, index) => (
+              <div key={ticket.id} className="px-4 py-3 hover:bg-gray-50">
+                <div className="grid grid-cols-12 gap-4 items-center text-sm">
+                  <div className="col-span-1">
+                    <div className="flex items-center space-x-2">
+                      {index < 2 && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
+                      <span className="text-gray-500">{ticket.id}</span>
+                    </div>
+                  </div>
+                  <div className="col-span-4">
+                    <span className="text-gray-900 font-medium">{ticket.title}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <div className="flex items-center space-x-1">
+                      <Clock className="w-3 h-3 text-gray-400" />
+                      <span className="text-gray-600">{ticket.stage}</span>
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-blue-600 hover:underline cursor-pointer">{ticket.part}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-orange-500 rounded text-white text-xs flex items-center justify-center">
+                        {ticket.owner.substring(0, 2)}
+                      </div>
+                      <span className="text-gray-600">{ticket.owner}</span>
+                    </div>
+                  </div>
+                  <div className="col-span-1">
+                    <button className="text-gray-400 hover:text-gray-600">
+                      <Settings className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default App;
