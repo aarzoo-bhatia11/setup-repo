@@ -1741,32 +1741,32 @@ function App() {
           <div className="p-6">
             <nav className="space-y-1">
               <div className="space-y-3">
-                <a 
+            <h1 className="text-lg font-semibold text-gray-900">DevRev</h1>
                   href="#" 
                   onClick={() => setCurrentPage('general')}
                   className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
                 >
                   <User className="h-4 w-4" />
                   <span>General</span>
-                </a>
+                className={`w-full text-left px-3 py-2 text-xs rounded-md transition-colors ${
                 <a 
-                  href="#" 
+                    ? 'bg-blue-50 text-blue-600 font-medium' 
                   onClick={() => setCurrentPage('account')}
                   className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
                 >
-                  <User className="h-4 w-4" />
+                Step 1: Primary Goal
                   <span>Account</span>
                 </a>
-                <a 
+              {primaryGoalComplete && (
                   href="#" 
-                  onClick={() => setCurrentPage('get-started')}
-                  className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-lg border-l-4 ${
-                    currentPage === 'get-started' 
-                      ? 'text-gray-900 bg-blue-50 border-blue-500 font-medium' 
+                  onClick={() => setCurrentPage('step2')}
+                  className={`w-full text-left px-3 py-2 text-xs rounded-md transition-colors ${
+                    currentPage === 'step2' 
+                      ? 'bg-blue-50 text-blue-600 font-medium' 
                       : 'text-gray-700 hover:bg-gray-50 border-transparent'
                   }`}
                 >
-                  <Play className={`h-4 w-4 ${currentPage === 'get-started' ? 'text-blue-600' : ''}`} />
+                  Step 2: Setup Trails
                   <span>Get Started</span>
                 </a>
               </div>
@@ -1951,45 +1951,352 @@ function App() {
                     </a>
                     <a 
                       href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Route className="h-4 w-4" />
-                      <span>Routing</span>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-3">
+                  Provide us your primary goal for using DevRev support. This would help us determine the optimal and fastest support setup path for you.
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Example: Scale support without hiring more agents, Self-Service Expansion
                     </a>
                   </div>
-                </div>
-              )}
+                <textarea
+                  rows={4}
+                  value={primaryGoal}
+                  onChange={(e) => setPrimaryGoal(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="Describe your primary goal for using DevRev support..."
+                />
 
-              {/* Snap-ins Section */}
-              {step7Completed && (
-                <div className="pt-8">
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Extensions
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Plug className="h-4 w-4" />
-                      <span>Snap-ins</span>
-                    </a>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={handleStep1Complete}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'step2' && (
+            <div className="p-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Step 2: Setting up Trails</h2>
+              
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-3">Configure Your Trails</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Trails help you organize and track customer support conversations efficiently.
+                </p>
+                
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Trail Name
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      placeholder="Enter trail name"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      placeholder="Describe the purpose of this trail"
+                    />
                   </div>
                 </div>
-              )}
-            </nav>
-          </div>
+                
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={handleStep2Complete}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Complete Step 2
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'trails' && (
+            <div className="p-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Trails Configuration</h2>
+              
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-3">Advanced Trail Settings</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Configure advanced settings for your trails and automation rules.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900">Auto-assignment</h4>
+                      <p className="text-xs text-gray-600">Automatically assign tickets to available agents</p>
+                    </div>
+                    <input type="checkbox" className="rounded" />
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900">Priority routing</h4>
+                      <p className="text-xs text-gray-600">Route high-priority tickets to senior agents</p>
+                    </div>
+                    <input type="checkbox" className="rounded" />
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={handleStep3Complete}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Complete Trails Setup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'tickets' && (
+            <div className="p-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Ticket Management</h2>
+              
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-3">Configure Ticket Settings</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Set up your ticket management preferences and workflows.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 border border-gray-200 rounded-md">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">Priority Levels</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Low</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Medium</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">High</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Critical</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 border border-gray-200 rounded-md">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">Status Options</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Open</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">In Progress</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Resolved</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Closed</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={handleStep4Complete}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Complete Ticket Setup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'airsync' && (
+            <div className="p-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">AirSync Integration</h2>
+              
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-3">Connect Your Tools</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Integrate with your existing support tools and platforms.
+                </p>
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <button
+                    onClick={() => setShowZendeskModal(true)}
+                    className="p-4 border border-gray-200 rounded-md hover:border-blue-300 hover:bg-blue-50 transition-colors text-center"
+                  >
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <span className="text-green-600 font-bold text-sm">Z</span>
+                    </div>
+                    <h4 className="text-sm font-medium text-gray-900">Zendesk</h4>
+                    <p className="text-xs text-gray-600">Connect your Zendesk account</p>
+                  </button>
+                  
+                  <button className="p-4 border border-gray-200 rounded-md hover:border-blue-300 hover:bg-blue-50 transition-colors text-center">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <span className="text-blue-600 font-bold text-sm">S</span>
+                    </div>
+                    <h4 className="text-sm font-medium text-gray-900">Slack</h4>
+                    <p className="text-xs text-gray-600">Connect your Slack workspace</p>
+                  </button>
+                  
+                  <button className="p-4 border border-gray-200 rounded-md hover:border-blue-300 hover:bg-blue-50 transition-colors text-center">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <span className="text-purple-600 font-bold text-sm">J</span>
+                    </div>
+                    <h4 className="text-sm font-medium text-gray-900">Jira</h4>
+                    <p className="text-xs text-gray-600">Connect your Jira instance</p>
+                  </button>
+                </div>
+                
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={handleStep5Complete}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Complete AirSync Setup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentPage === 'knowledge' && (
+            <div className="p-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Knowledge Management</h2>
+              
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-3">Setup Knowledge Base</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Create and organize your knowledge base for better customer self-service.
+                </p>
+                
+                <div className="space-y-4">
+                  <div className="p-4 border border-gray-200 rounded-md">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">Article Categories</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Getting Started</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Troubleshooting</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">FAQ</span>
+                      </div>
+                      <div className="flex items-center">
+                        <input type="checkbox" className="rounded mr-2" />
+                        <span className="text-xs text-gray-700">Best Practices</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 border border-gray-200 rounded-md">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">Search Settings</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-700">Enable full-text search</span>
+                        <input type="checkbox" className="rounded" />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-700">Auto-suggest articles</span>
+                        <input type="checkbox" className="rounded" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => addToast('Knowledge Management setup completed!')}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Complete Knowledge Setup
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-
-        {/* Main Content */}
-        {currentPage === 'trails' ? <TrailsPage /> : 
-         setupCompleted ? <TicketsPage /> : <GetStartedPage />}
       </div>
 
-      {/* Modals */}
+      {/* Zendesk Modal */}
+      {showZendeskModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Zendesk Integration</h3>
+                <button
+                  onClick={() => setShowZendeskModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+      </div>
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex items-center mb-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-900">Successfully logged into Zendesk</span>
+                </div>
+                
+                <div className="space-y-3 text-sm text-gray-600">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                    <span>Accounts</span>
+                    <span className="text-blue-600">✓ Synced</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                    <span>Contacts</span>
+                    <span className="text-blue-600">✓ Synced</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                    <span>Tickets</span>
+                    <span className="text-blue-600">✓ Synced</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowZendeskModal(false)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                >
+                  Continue
+                </button>
       {showVideoModal && <VideoModal />}
       {showAirsyncModal && <AirsyncModal />}
+          </div>
       {showCustomConnectorModal && <CustomConnectorModal />}
+      )}
     </div>
   );
 }
