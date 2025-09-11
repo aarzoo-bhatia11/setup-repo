@@ -1751,8 +1751,8 @@ function App() {
                 </a>
                   className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
                     activeView === 'setup' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
                   onClick={() => setCurrentPage('account')}
-                  className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
                 >
                   {step1Complete ? 'Continue Setup' : 'Get Started'}
                   <span>Account</span>
