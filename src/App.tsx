@@ -1754,8 +1754,19 @@ function App() {
                   }`}
                   onClick={() => setCurrentPage('account')}
                 >
-                  {step1Complete ? 'Continue Setup' : 'Get Started'}
+                  <User className="w-4 h-4 mr-3" />
+                  <span>Account</span>
                 </button>
+                <button
+                  onClick={() => setCurrentPage('get-started')}
+                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
+                    activeView === 'get-started' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Play className="w-4 h-4 mr-3" />
+                  <span>{step1Complete ? 'Continue Setup' : 'Get Started'}</span>
+                </button>
+              </div>
                 <a 
                   href="#" 
                   onClick={() => setCurrentPage('get-started')}
