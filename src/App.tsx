@@ -257,10 +257,10 @@ function App() {
                 <div key={object} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
                   <input type="checkbox" defaultChecked className="h-4 w-4 text-blue-600" />
                   <span className="text-sm font-medium">{object}</span>
-                </div>
+              </div>
               ))}
-            </div>
           </div>
+        </div>
 
           <div>
             <h4 className="text-lg font-medium mb-3">Data Mapping Preview</h4>
@@ -274,7 +274,7 @@ function App() {
                     <div className="text-sm text-gray-600">• ticket.priority</div>
                     <div className="text-sm text-gray-600">• ticket.status</div>
                     <div className="text-sm text-gray-600">• ticket.assignee</div>
-                  </div>
+                </div>
                 </div>
                 <div>
                   <h5 className="font-medium text-gray-900 mb-2">DevRev Fields</h5>
@@ -284,11 +284,11 @@ function App() {
                     <div className="text-sm text-gray-600">→ work.priority</div>
                     <div className="text-sm text-gray-600">→ work.stage</div>
                     <div className="text-sm text-gray-600">→ work.owned_by</div>
-                  </div>
                 </div>
               </div>
+              </div>
+              </div>
             </div>
-          </div>
 
           <div className="flex justify-end space-x-3">
             <button 
@@ -303,10 +303,10 @@ function App() {
             >
               Start Airsync
             </button>
-          </div>
-        </div>
-      </div>
-    </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
   );
 
   const CustomConnectorModal = () => (
@@ -320,14 +320,14 @@ function App() {
           >
             <X className="h-5 w-5" />
           </button>
-        </div>
+                    </div>
 
         {!connectorGenerated ? (
           <div className="space-y-4">
             
             {!connectorGenerated ? (
               <div className="space-y-6">
-                <div>
+                    <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     a) Authorize your tool through Email:
                   </label>
@@ -336,7 +336,7 @@ function App() {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter your email address"
                   />
-                </div>
+                    </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -360,9 +360,9 @@ function App() {
                     className="w-full h-24 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Paste API documentation URL or details..."
                   />
-                </div>
+                    </div>
 
-                <div>
+                    <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     d) Select sync type:
                   </label>
@@ -372,17 +372,17 @@ function App() {
                     <option value="1-way">1-way sync: Keep data in sync from an external source to DevRev.</option>
                     <option value="2-way">2-way sync: Synchronize data bidirectionally between DevRev and an external source.</option>
                   </select>
-                </div>
-              </div>
+                    </div>
+                  </div>
             ) : (
               <div className="text-center py-8">
                 <div className="mb-6">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-green-600" />
-                  </div>
+                </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Code Generated Successfully!</h3>
                   <p className="text-gray-600">Your custom connector has been generated and is ready for testing.</p>
-                </div>
+                    </div>
               </div>
             )}
             <div className="flex justify-end space-x-3">
@@ -409,16 +409,16 @@ function App() {
           <div className="space-y-4">
             <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
               <CheckCircle2 className="h-6 w-6 text-green-600" />
-              <div>
+                    <div>
                 <h4 className="font-medium text-green-900">Connector Generated Successfully!</h4>
                 <p className="text-sm text-green-700">Your custom airsync connector has been created.</p>
-              </div>
-            </div>
+                    </div>
+                  </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center space-x-3 mb-3">
                 <Code className="h-5 w-5 text-gray-600" />
                 <span className="font-medium">Generated Snap-in</span>
-              </div>
+                </div>
               <p className="text-sm text-gray-600 mb-3">
                 Clone the project in your code editor to review and publish as your DevRev snap-in.
               </p>
@@ -426,7 +426,7 @@ function App() {
                 <Download className="h-4 w-4" />
                 <span>Clone Project</span>
               </button>
-            </div>
+                    </div>
             <div className="flex justify-end">
               <button 
                 onClick={() => setShowCustomConnectorModal(false)}
@@ -434,10 +434,10 @@ function App() {
               >
                 Continue Setup
               </button>
-            </div>
-          </div>
+                    </div>
+                  </div>
         )}
-      </div>
+                </div>
     </div>
   );
 
@@ -465,7 +465,7 @@ function App() {
     <div className="flex-1 p-4">
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
             <h1 className="text-base font-medium text-gray-900">Trails</h1>
             <div className="relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
@@ -474,67 +474,67 @@ function App() {
                 placeholder="Type to search"
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64 text-sm"
               />
-            </div>
-          </div>
+                    </div>
+                    </div>
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <span>Show</span>
             <button className="flex items-center space-x-1 px-2 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50">
               <span>Owner</span>
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
-          </div>
-        </div>
+                  </div>
+                </div>
 
         <div className="relative h-[560px] bg-gray-50">
           <div className="absolute left-12 top-16 space-y-7">
             {["DevRev Studio","DevRev AgentOS","DevRevU","The Book of DevRev","DevRev Corp","DevRev Community","DevRev Apps"].map((name, idx) => (
               <div key={idx} className="bg-white rounded-lg p-3 shadow-sm border border-purple-200 w-52">
-                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
                   <div className="w-7 h-7 bg-purple-100 rounded-lg flex items-center justify-center">
                     <div className="w-3.5 h-3.5 bg-purple-500 rounded" />
-                  </div>
-                  <div>
+                    </div>
+                    <div>
                     <h3 className="text-sm font-medium text-gray-900 truncate">{name}</h3>
                     <p className="text-[10px] text-gray-500">Sample owner +1</p>
+                    </div>
                   </div>
                 </div>
-              </div>
             ))}
-          </div>
+              </div>
 
           <div className="absolute left-[26rem] top-24 space-y-10">
             {["Agent Platform","Knowledge Graph","Analytics Platform","Agent and Workflow Studio","Observability, performance a..."]
               .map((name, idx) => (
               <div key={idx} className="bg-white rounded-lg p-3 shadow-sm border border-blue-200 w-52">
-                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
                   <div className="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center">
                     <div className="w-3.5 h-3.5 bg-blue-500 rounded" />
-                  </div>
-                  <div>
+                    </div>
+                    <div>
                     <h3 className="text-sm font-medium text-gray-900 truncate">{name}</h3>
                     <p className="text-[10px] text-gray-500">Owner +1</p>
+                    </div>
                   </div>
-                </div>
               </div>
             ))}
-          </div>
+                </div>
 
           <div className="absolute right-12 top-16 space-y-7">
             {["Workflows and Skills: Observa...","Agent creation and Personaliz...","Workflow Controls","Workflow Builder UX"]
               .map((name, idx) => (
               <div key={idx} className="bg-white rounded-lg p-2.5 shadow-sm border border-gray-200 w-60">
-                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
                   <div className="w-6 h-6 bg-gray-100 rounded flex items-center justify-center">
                     <div className="w-3 h-3 bg-gray-400 rounded" />
-                  </div>
-                  <div>
+                    </div>
+                    <div>
                     <h3 className="text-[13px] font-medium text-gray-900 truncate">{name}</h3>
                     <p className="text-[10px] text-gray-500">Owner</p>
+                    </div>
                   </div>
-                </div>
               </div>
             ))}
-          </div>
+                </div>
 
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             <path d="M 300 130 C 340 130, 350 150, 380 175" stroke="#e6e8ee" strokeWidth="2" fill="none" />
@@ -547,9 +547,9 @@ function App() {
             <path d="M 590 295 C 620 260, 640 250, 680 235" stroke="#e6e8ee" strokeWidth="2" fill="none" />
             <path d="M 590 355 C 620 320, 640 305, 680 295" stroke="#e6e8ee" strokeWidth="2" fill="none" />
           </svg>
-        </div>
-      </div>
-    </div>
+                    </div>
+                    </div>
+                  </div>
   );
 
   const TicketsPage = () => (
@@ -557,11 +557,11 @@ function App() {
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center">
               <span className="text-lg">👋</span>
-            </div>
-            <div>
+                    </div>
+                    <div>
               <h2 className="text-lg font-semibold text-gray-900">Welcome to DevRev!</h2>
               <p className="text-sm text-gray-600">Let's begin with the tasks that will help you start using DevRev effectively.</p>
             </div>
@@ -573,17 +573,17 @@ function App() {
             <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium">
               Contact us
             </button>
-          </div>
-        </div>
-      </div>
+                    </div>
+                  </div>
+                </div>
 
       {/* Tickets Header */}
       <div className="px-6 py-4 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
             <h1 className="text-xl font-semibold text-gray-900">Tickets</h1>
             <span className="text-sm text-gray-500">5</span>
-          </div>
+                    </div>
           <div className="flex items-center space-x-3">
             <button className="p-2 text-gray-400 hover:text-gray-600">
               <Zap className="h-4 w-4" />
@@ -592,8 +592,8 @@ function App() {
               <Plus className="h-4 w-4" />
               <span>Ticket</span>
             </button>
-          </div>
-        </div>
+                    </div>
+                  </div>
       </div>
 
       {/* New View Banner */}
@@ -605,22 +605,22 @@ function App() {
           <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
             Try it now
           </button>
-        </div>
-      </div>
+                </div>
+              </div>
 
       {/* Tickets List */}
       <div className="p-6">
         <div className="bg-white rounded-lg border border-gray-200">
           {/* List Header */}
           <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-            <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3">
               <Zap className="h-4 w-4 text-orange-500" />
               <span className="text-sm font-medium text-gray-900">List of all tickets for customer support</span>
               <button className="ml-auto text-gray-400 hover:text-gray-600">
                 <X className="h-4 w-4" />
               </button>
-            </div>
-          </div>
+                    </div>
+                    </div>
 
           {/* Filters */}
           <div className="px-4 py-3 border-b border-gray-200">
@@ -639,13 +639,13 @@ function App() {
                 <button className="px-3 py-1.5 bg-orange-100 text-orange-800 rounded-lg text-sm font-medium">
                   Ticket
                 </button>
-              </div>
+                  </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Created date</span>
                 <button className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm">
                   Last 90 days
                 </button>
-              </div>
+                </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Stage</span>
                 <button className="flex items-center space-x-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm">
@@ -653,14 +653,14 @@ function App() {
                   <span>Queued</span>
                   <span className="text-gray-500">+5</span>
                 </button>
-              </div>
+                    </div>
               <button className="p-1.5 text-gray-400 hover:text-gray-600">
                 <Plus className="h-4 w-4" />
               </button>
               <button className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800">
                 Clear
               </button>
-            </div>
+                    </div>
           </div>
 
           {/* Table Header */}
@@ -672,8 +672,8 @@ function App() {
               <div className="col-span-2">Part</div>
               <div className="col-span-2">Owner</div>
               <div className="col-span-1"></div>
-            </div>
-          </div>
+                  </div>
+                </div>
 
           {/* Ticket Rows */}
           <div className="divide-y divide-gray-200">
@@ -691,7 +691,7 @@ function App() {
                       <div className={`w-2 h-2 rounded-full ${idx === 0 ? 'bg-blue-500' : 'bg-blue-500'}`}></div>
                       <span className="text-sm font-medium text-gray-900">{ticket.id}</span>
                     </div>
-                  </div>
+                    </div>
                   <div className="col-span-4">
                     <div className="text-sm font-medium text-gray-900">{ticket.title}</div>
                   </div>
@@ -699,24 +699,24 @@ function App() {
                     <div className="flex items-center space-x-2">
                       <div className={`w-2 h-2 rounded-full ${ticket.stage === 'Queued' ? 'bg-gray-400' : 'bg-orange-400'}`}></div>
                       <span className="text-sm text-gray-600">{ticket.stage}</span>
+                </div>
                     </div>
-                  </div>
                   <div className="col-span-2">
                     <span className="text-sm text-blue-600">{ticket.part}</span>
-                  </div>
+                    </div>
                   <div className="col-span-2">
                     <div className="flex items-center space-x-2">
                       <div className="w-6 h-6 bg-orange-500 rounded text-white text-xs flex items-center justify-center font-medium">
                         {ticket.owner.charAt(0)}
-                      </div>
-                      <span className="text-sm text-gray-600">{ticket.owner}</span>
-                    </div>
                   </div>
+                      <span className="text-sm text-gray-600">{ticket.owner}</span>
+                </div>
+              </div>
                   <div className="col-span-1">
                     <button className="text-gray-400 hover:text-gray-600">
                       <MoreHorizontal className="h-4 w-4" />
                     </button>
-                  </div>
+            </div>
                 </div>
               </div>
             ))}
@@ -733,7 +733,7 @@ function App() {
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-2">
             <span className="text-2xl font-bold tracking-tight text-gray-900">DevRev</span>
-          </div>
+            </div>
           <p className="text-gray-800 font-medium">Let us Setup DevRev Support for you</p>
         </div>
 
@@ -759,87 +759,87 @@ function App() {
             {/* Step 1: Setup Trails */}
             {!trailsGenerated && (
               <div className="border rounded-lg p-6 mb-4 border-gray-200 hover:border-blue-300">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 mt-1">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0 mt-1">
                     <Circle className="h-6 w-6 text-gray-300" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900">Start by setting up trails</h3>
+                    <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Step 1</span>
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <h3 className="text-lg font-semibold text-gray-900">Start by setting up trails</h3>
-                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Step 1</span>
-                    </div>
-                    <p className="text-gray-600 mb-4">
-                      Let's start by creating a mind-map of your product to track your support tickets to relevant product parts
-                    </p>
-                    
-                    <div className="mb-6">
-                      <div 
-                        className="relative bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 cursor-pointer hover:from-blue-100 hover:to-purple-100 transition-all duration-200 border border-blue-200"
-                        onClick={() => setShowVideoModal(true)}
-                      >
-                        <div className="flex items-center space-x-4">
-                          <div className="flex-shrink-0">
-                            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                              <Play className="h-8 w-8 text-white ml-1" />
-                            </div>
+                  <p className="text-gray-600 mb-4">
+                    Let's start by creating a mind-map of your product to track your support tickets to relevant product parts
+                  </p>
+                  
+                  <div className="mb-6">
+                    <div 
+                      className="relative bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 cursor-pointer hover:from-blue-100 hover:to-purple-100 transition-all duration-200 border border-blue-200"
+                      onClick={() => setShowVideoModal(true)}
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="flex-shrink-0">
+                          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                            <Play className="h-8 w-8 text-white ml-1" />
                           </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900 mb-1">What are trails?</h4>
-                            <p className="text-sm text-gray-600">Learn how trails help organize your support workflow</p>
-                          </div>
-                          <ExternalLink className="h-4 w-4 text-gray-400 ml-auto" />
                         </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-1">What are trails?</h4>
+                          <p className="text-sm text-gray-600">Learn how trails help organize your support workflow</p>
+                        </div>
+                        <ExternalLink className="h-4 w-4 text-gray-400 ml-auto" />
                       </div>
                     </div>
+                  </div>
 
-                    <div className="space-y-4">
-                      <div>
-                        <label htmlFor="website-url" className="block text-sm font-medium text-gray-700 mb-2">
-                          Website URL
-                        </label>
-                        <div className="flex space-x-3">
-                          <div className="flex-1 relative">
-                            <Globe className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                            <input
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="website-url" className="block text-sm font-medium text-gray-700 mb-2">
+                        Website URL
+                      </label>
+                      <div className="flex space-x-3">
+                        <div className="flex-1 relative">
+                          <Globe className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                          <input
                               type="text"
-                              id="website-url"
+                            id="website-url"
                               autoFocus
-                              value={websiteUrl}
-                              onChange={(e) => setWebsiteUrl(e.target.value)}
+                            value={websiteUrl}
+                            onChange={(e) => setWebsiteUrl(e.target.value)}
                               placeholder="https://paytm.com"
-                              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                            />
-                          </div>
-                          <button
-                            onClick={handleGenerateTrails}
-                            disabled={websiteUrl.trim().length < 1 || isGenerating}
-                            className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2 ${
-                              websiteUrl.trim().length < 1 || isGenerating
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-black hover:bg-gray-800 text-white shadow-lg hover:shadow-xl'
-                            }`}
-                          >
-                            {isGenerating ? (
-                              <>
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                <span>Generating...</span>
-                              </>
-                            ) : (
-                              <>
-                                <span>Auto-generate trails</span>
-                                <ArrowRight className="h-4 w-4" />
-                              </>
-                            )}
-                          </button>
+                            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                          />
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">
-                          DevRev will analyze your website and automatically create relevant trails for your product
-                        </p>
+                        <button
+                          onClick={handleGenerateTrails}
+                            disabled={websiteUrl.trim().length < 1 || isGenerating}
+                          className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2 ${
+                              websiteUrl.trim().length < 1 || isGenerating
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-black hover:bg-gray-800 text-white shadow-lg hover:shadow-xl'
+                          }`}
+                        >
+                          {isGenerating ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span>Generating...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Auto-generate trails</span>
+                              <ArrowRight className="h-4 w-4" />
+                            </>
+                          )}
+                        </button>
                       </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        DevRev will analyze your website and automatically create relevant trails for your product
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
             )}
 
             {/* Step 2: Import Data */}
@@ -865,7 +865,7 @@ function App() {
                     </p>
 
                     {!airsyncInProgress && (
-                      <div className="space-y-4">
+            <div className="space-y-4">
                         <p className="text-sm font-medium text-gray-700">Select your current support platform:</p>
                         <div className="grid grid-cols-2 gap-4">
                           {[
@@ -923,11 +923,11 @@ function App() {
                   focusedStep === 3 ? 'border-blue-300 ring-2 ring-blue-400 bg-blue-50/40' : 'border-gray-200'
                 }`}
               >
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 mt-1">
-                    <Circle className="h-6 w-6 text-gray-300" />
-                  </div>
-                  <div className="flex-1">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 mt-1">
+                      <Circle className="h-6 w-6 text-gray-300" />
+                    </div>
+                    <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-3">
                       <h3 className="text-lg font-semibold text-gray-900">Customize tickets and conversations</h3>
                       <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Step 3</span>
@@ -1008,11 +1008,11 @@ function App() {
                                         <span className="text-xs text-gray-500">Visibility: {properties.visibility}</span>
                                         <span className={`text-xs ${properties.actionable ? 'text-green-600' : 'text-gray-500'}`}>
                                           {properties.actionable ? 'Actionable' : 'Read-only'}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                               );
                             });
                           })()}
@@ -1539,8 +1539,8 @@ function App() {
                                   <button key={num} className="w-8 h-8 border border-gray-300 rounded-full flex items-center justify-center hover:bg-yellow-100">
                                     <Star className="h-4 w-4 text-gray-400" />
                                   </button>
-                                ))}
-                              </div>
+              ))}
+            </div>
                             </div>
                           </div>
                         </div>
@@ -1745,66 +1745,35 @@ function App() {
                   href="#" 
                   onClick={() => setCurrentPage('general')}
                   className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                  }`}
                 >
+                  <User className="h-4 w-4" />
                   <span>General</span>
                 </a>
-                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                    activeView === 'setup' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                <a 
+                  href="#" 
                   onClick={() => setCurrentPage('account')}
+                  className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
                 >
-                  <User className="w-4 h-4 mr-3" />
+                  <User className="h-4 w-4" />
                   <span>Account</span>
-                </button>
-                <button
-                  onClick={() => setCurrentPage('get-started')}
-                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                    activeView === 'get-started' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <Play className="w-4 h-4 mr-3" />
-                  <span>{step1Complete ? 'Continue Setup' : 'Get Started'}</span>
-                </button>
-              </div>
-              </div>
+                </a>
                 <a 
                   href="#" 
                   onClick={() => setCurrentPage('get-started')}
                   className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-lg border-l-4 ${
                     currentPage === 'get-started' 
-                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                    activeView === 'general' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                      ? 'text-gray-900 bg-blue-50 border-blue-500 font-medium' 
+                      : 'text-gray-700 hover:bg-gray-50 border-transparent'
                   }`}
-                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                    activeView === 'trails' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                >
+                  <Play className={`h-4 w-4 ${currentPage === 'get-started' ? 'text-blue-600' : ''}`} />
                   <span>Get Started</span>
                 </a>
               </div>
 
               {/* Product Section */}
-                
-                <button
-                  onClick={() => setActiveView('tickets')}
-                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                    activeView === 'tickets' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <Ticket className="w-4 h-4 mr-3" />
-                  Tickets
-                </button>
-                
-                <button
-                  onClick={() => setActiveView('conversations')}
-                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                    activeView === 'conversations' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <MessageSquare className="w-4 h-4 mr-3" />
-                  Conversations
-                </button>
-                  className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                    activeView === 'account' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+              {trailsGenerated && (
+                <div className="mt-8">
                   <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                     Product
                   </h3>
@@ -1813,227 +1782,13 @@ function App() {
                     onClick={() => setCurrentPage('trails')}
                     className={`flex items-center space-x-3 px-3 py-2 text-sm rounded-lg ${
                       currentPage === 'trails' 
-                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                      activeView === 'snap-ins' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
+                        ? 'text-gray-900 bg-gray-100 font-medium' 
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    <GitBranch className="h-4 w-4" />
+                    <div className="w-4 h-4 bg-gray-400 rounded"></div>
                     <span>Trails</span>
                   </a>
-                </div>
-              )}
-
-                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                      activeView === 'airsyncs' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                <div className="pt-8">
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Work
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Ticket className="h-4 w-4" />
-                      <span>Tickets</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      <span>Conversations</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Customers Section */}
-              {showWorkSections && (
-                <div className="pt-8">
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Customers
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <UserCheck className="h-4 w-4" />
-                      <span>Contacts</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Building2 className="h-4 w-4" />
-                      <span>Accounts</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Customization Section */}
-              {step3Completed && (
-                <div className="pt-8">
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Customization
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Sliders3 className="h-4 w-4" />
-                      <span>Object Customization</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Workflow className="h-4 w-4" />
-                      <span>Stage Customization</span>
-                      <span className="px-1.5 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">BETA</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <FileText className="h-4 w-4" />
-                      <span>Tags</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <FileText className="h-4 w-4" />
-                      <span>Templates</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Channels Section */}
-              {step4Completed && (
-                <div className="pt-8">
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Channels
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Mail className="h-4 w-4" />
-                      <span>Email</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      <span>Slack</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Smartphone className="h-4 w-4" />
-                      <span>Whatsapp</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Bot className="h-4 w-4" />
-                      <span>Live Chat widget</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Globe2 className="h-4 w-4" />
-                      <span>Customer Portal</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Phone className="h-4 w-4" />
-                      <span>Telephony</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Workflows & Routing Section */}
-              {step5Completed && (
-                <div className="pt-8">
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Workflows & Routing
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Workflow className="h-4 w-4" />
-                      <span>Workflows</span>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Route className="h-4 w-4" />
-                      <span>Routing</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {/* Snap-ins Section */}
-              {step7Completed && (
-                <div className="pt-8">
-                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                    Extensions
-                  </h3>
-                  <div className="space-y-1">
-                    <a 
-                      href="#" 
-                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
-                    >
-                      <Plug className="h-4 w-4" />
-                      <span>Snap-ins</span>
-                    </a>
-                  </div>
-                </div>
-              )}
-              
-              {/* Knowledge Management Section - Show after AirSync completion */}
-              {showKnowledgeManagement && (
-                <div className="mb-4">
-                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    KNOWLEDGE MANAGEMENT
-                  </div>
-                  <button
-                    onClick={() => setActiveView('knowledge-base')}
-                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                      activeView === 'knowledge-base' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    <BookOpen className="w-4 h-4 mr-3" />
-                    Knowledge Base
-                  </button>
-                  
-                  <button
-                    onClick={() => setActiveView('article-analytics')}
-                    className={`w-full flex items-center px-3 py-2 text-sm transition-colors ${
-                      activeView === 'article-analytics' ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    <BarChart3 className="w-4 h-4 mr-3" />
-                    Article Analytics
-                  </button>
                 </div>
               )}
             </nav>
