@@ -276,7 +276,6 @@ function App() {
                     <div className="text-sm text-gray-600">• ticket.assignee</div>
                   </div>
                 </div>
-               <>
                 <div>
                   <h5 className="font-medium text-gray-900 mb-2">DevRev Fields</h5>
                   <div className="space-y-2">
@@ -349,7 +348,7 @@ function App() {
                     placeholder="Enter your password"
                   />
                 </div>
-              />
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     c) Provide your API Documentation:
@@ -362,7 +361,7 @@ function App() {
                     placeholder="Paste API documentation URL or details..."
                   />
                 </div>
-            </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     d) Select sync type:
@@ -401,9 +400,6 @@ function App() {
                     ? 'bg-black hover:bg-gray-800 text-white' 
                     : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
-              <button 
-                onClick={() => setConnectorGenerated(!connectorGenerated)}
-                className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800"
               >
                 {connectorGenerated ? 'Test Connector' : 'Generate Connector'}
               </button>
