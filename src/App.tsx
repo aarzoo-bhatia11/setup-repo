@@ -42,17 +42,7 @@ interface StepProps {
 const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [showTrailsExplanation, setShowTrailsExplanation] = useState(false);
   const [showSetupComplete, setShowSetupComplete] = useState(false);
-
-  const handleSetupTrails = () => {
-    setShowTrailsExplanation(true);
-    setTimeout(() => {
-      setCompletedSteps([1]);
-      setCurrentStep(2);
-      setShowTrailsExplanation(false);
-    }, 3000);
-  };
 
   const handleStepComplete = (step: number) => {
     if (!completedSteps.includes(step)) {
@@ -200,26 +190,6 @@ const App: React.FC = () => {
           <TicketsView />
         ) : (
           <div className="p-8">
-            {showTrailsExplanation && (
-              <div className="max-w-2xl mx-auto">
-                <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-                  <div className="w-16 h-16 mx-auto mb-6 bg-black rounded-full flex items-center justify-center">
-                    <GitBranch className="w-8 h-8 text-white" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Setting up your Trails</h2>
-                  <p className="text-gray-600 mb-6">
-                    Trails are your personalized pathways through DevRev. We're creating custom workflows, 
-                    views, and automations based on your team's needs and industry best practices.
-                  </p>
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-2 h-2 bg-black rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {isStepVisible(1) && <Step1 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
             {isStepVisible(2) && <Step2 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
             {isStepVisible(3) && <Step3 currentStep={currentStep} completedSteps={completedSteps} onStepComplete={handleStepComplete} />}
