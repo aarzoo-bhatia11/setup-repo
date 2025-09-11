@@ -19,7 +19,22 @@ import {
   Search,
   Filter,
   ChevronDown,
-  MoreHorizontal
+  MoreHorizontal,
+  Mail,
+  Building,
+  Database,
+  MessageSquare,
+  Ticket,
+  UserCheck,
+  Building2,
+  Plus,
+  X,
+  Check,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Code,
+  Download
 } from 'lucide-react';
 
 function App() {
@@ -52,6 +67,26 @@ function App() {
   const step1Ref = useRef<HTMLDivElement | null>(null);
   const step3Ref = useRef<HTMLDivElement | null>(null);
   const step4Ref = useRef<HTMLDivElement | null>(null);
+  
+  // New state for the revamped flow
+  const [selectedEmailProvider, setSelectedEmailProvider] = useState('');
+  const [isGoogleSignedIn, setIsGoogleSignedIn] = useState(false);
+  const [selectedImportSource, setSelectedImportSource] = useState('');
+  const [showAirsyncModal, setShowAirsyncModal] = useState(false);
+  const [airsyncInProgress, setAirsyncInProgress] = useState(false);
+  const [airsyncCompleted, setAirsyncCompleted] = useState(false);
+  const [showCustomConnectorModal, setShowCustomConnectorModal] = useState(false);
+  const [connectorRequirements, setConnectorRequirements] = useState('');
+  const [connectorGenerated, setConnectorGenerated] = useState(false);
+  const [selectedTicketFields, setSelectedTicketFields] = useState<{[k: string]: boolean}>({
+    'Payment Method': true,
+    'Transaction ID': true,
+    'Account Type': true,
+    'KYC Status': true,
+    'Issue Category': true,
+    'Priority Level': true,
+  });
+  const [showWorkSections, setShowWorkSections] = useState(false);
 
   const handleGenerateTrails = async () => {
     if (!websiteUrl) return;
@@ -77,6 +112,50 @@ function App() {
     }, 4000);
   };
 
+  const handleGoogleSignIn = async () => {
+    // Simulate Google OAuth flow
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsGoogleSignedIn(true);
+    setStep2CarouselIndex(2); // Move to portal creation step
+  };
+
+  const handleImportSourceSelect = (source: string) => {
+    setSelectedImportSource(source);
+    if (source === 'custom') {
+      setShowCustomConnectorModal(true);
+    } else {
+      setShowAirsyncModal(true);
+    }
+  };
+
+  const handleStartAirsync = async () => {
+    setShowAirsyncModal(false);
+    setAirsyncInProgress(true);
+    setShowWorkSections(true);
+    
+    // Simulate airsync progress
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    setAirsyncInProgress(false);
+    setAirsyncCompleted(true);
+    setStep2Completed(true);
+    setFocusedStep(3);
+    
+    // Show completion notification
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 4000);
+  };
+
+  const handleGenerateConnector = async () => {
+    if (!connectorRequirements) return;
+    
+    // Simulate connector generation
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setConnectorGenerated(true);
+    setStep2Completed(true);
+    setShowWorkSections(true);
+    setFocusedStep(3);
+  };
+
   const VideoModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowVideoModal(false)}>
       <div className="bg-white rounded-lg p-4 max-w-4xl w-full mx-4" onClick={e => e.stopPropagation()}>
@@ -86,7 +165,7 @@ function App() {
             onClick={() => setShowVideoModal(false)}
             className="text-gray-500 hover:text-gray-700"
           >
-            ×
+            <X className="h-5 w-5" />
           </button>
         </div>
         <div className="aspect-video">
@@ -105,36 +184,161 @@ function App() {
     </div>
   );
 
-  const ChannelsModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowChannelsModal(false)}>
-      <div className="bg-white rounded-lg p-4 max-w-5xl w-full mx-4" onClick={e => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Select channels to create tickets or conversations</h3>
+  const AirsyncModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowAirsyncModal(false)}>
+      <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold">Configure {selectedImportSource} Airsync</h3>
           <button 
-            onClick={() => setShowChannelsModal(false)}
+            onClick={() => setShowAirsyncModal(false)}
             className="text-gray-500 hover:text-gray-700"
           >
-            ×
+            <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="space-y-4">
-          {['Email', 'Slack', 'Whatsapp', 'Live Chat widget', 'Customer Portal', 'Telephony'].map((name) => (
-            <div key={name} className="flex items-center space-x-3 border border-gray-200 rounded-lg p-4">
-              <input
-                type="checkbox"
-                className="h-4 w-4"
-                checked={selectedChannels[name]}
-                onChange={(e) => setSelectedChannels({ ...selectedChannels, [name]: e.target.checked })}
-              />
-              <span className="text-sm text-gray-800">{name}</span>
+
+        <div className="space-y-6">
+          <div>
+            <h4 className="text-lg font-medium mb-3">Objects to Airsync</h4>
+            <p className="text-sm text-gray-600 mb-4">
+              The following objects will be airsynced from {selectedImportSource} to DevRev:
+            </p>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {['Tickets', 'Users', 'Organizations', 'Articles', 'Comments', 'Attachments'].map((object) => (
+                <div key={object} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
+                  <input type="checkbox" defaultChecked className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium">{object}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <div>
+            <h4 className="text-lg font-medium mb-3">Data Mapping Preview</h4>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <h5 className="font-medium text-gray-900 mb-2">{selectedImportSource} Fields</h5>
+                  <div className="space-y-2">
+                    <div className="text-sm text-gray-600">• ticket.subject</div>
+                    <div className="text-sm text-gray-600">• ticket.description</div>
+                    <div className="text-sm text-gray-600">• ticket.priority</div>
+                    <div className="text-sm text-gray-600">• ticket.status</div>
+                    <div className="text-sm text-gray-600">• ticket.assignee</div>
+                  </div>
+                </div>
+                <div>
+                  <h5 className="font-medium text-gray-900 mb-2">DevRev Fields</h5>
+                  <div className="space-y-2">
+                    <div className="text-sm text-gray-600">→ work.title</div>
+                    <div className="text-sm text-gray-600">→ work.body</div>
+                    <div className="text-sm text-gray-600">→ work.priority</div>
+                    <div className="text-sm text-gray-600">→ work.stage</div>
+                    <div className="text-sm text-gray-600">→ work.owned_by</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-3">
+            <button 
+              onClick={() => setShowAirsyncModal(false)}
+              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={handleStartAirsync}
+              className="px-6 py-2 bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white rounded-lg"
+            >
+              Start Airsync
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const CustomConnectorModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowCustomConnectorModal(false)}>
+      <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4" onClick={e => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold">Create Custom Airsync Connector</h3>
+          <button 
+            onClick={() => setShowCustomConnectorModal(false)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
-        <div className="mt-6 flex justify-end space-x-3">
-          <button onClick={() => setShowChannelsModal(false)} className="px-4 py-2 rounded border border-gray-300">Cancel</button>
-          <button onClick={() => { setShowChannelsModal(false); setStep2Completed(true); setFocusedStep(3); }} className="px-4 py-2 rounded bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white">Save & Send Test</button>
-        </div>
+        {!connectorGenerated ? (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Describe your data source and requirements
+              </label>
+              <textarea
+                value={connectorRequirements}
+                onChange={(e) => setConnectorRequirements(e.target.value)}
+                placeholder="E.g., I need to sync customer data from our internal CRM system. It has REST APIs for customers, tickets, and interactions. I need to map customer.email to contact.email and ticket.subject to work.title..."
+                className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button 
+                onClick={() => setShowCustomConnectorModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleGenerateConnector}
+                disabled={!connectorRequirements.trim()}
+                className={`px-6 py-2 rounded-lg ${
+                  connectorRequirements.trim() 
+                    ? 'bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white' 
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Generate Connector
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <CheckCircle2 className="h-6 w-6 text-green-600" />
+              <div>
+                <h4 className="font-medium text-green-900">Connector Generated Successfully!</h4>
+                <p className="text-sm text-green-700">Your custom airsync connector has been created.</p>
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center space-x-3 mb-3">
+                <Code className="h-5 w-5 text-gray-600" />
+                <span className="font-medium">Generated Snap-in</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">
+                Clone the project in your code editor to review and publish as your DevRev snap-in.
+              </p>
+              <button className="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700">
+                <Download className="h-4 w-4" />
+                <span>Clone Project</span>
+              </button>
+            </div>
+            <div className="flex justify-end">
+              <button 
+                onClick={() => setShowCustomConnectorModal(false)}
+                className="px-6 py-2 bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white rounded-lg"
+              >
+                Continue Setup
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -259,18 +463,20 @@ function App() {
                 <h2 className="text-lg font-semibold text-gray-900">Support Settings</h2>
               </div>
               <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <span>{trailsGenerated ? '1' : '0'}/4 completed</span>
+                <span>{[trailsGenerated, step2Completed, step3Completed, step4Completed].filter(Boolean).length}/4 completed</span>
                 <div className="w-16 bg-gray-200 rounded-full h-2">
-                  <div className={`bg-blue-500 h-2 rounded-full transition-all duration-300 ${trailsGenerated ? 'w-1/4' : 'w-0'}`}></div>
+                  <div className={`bg-blue-500 h-2 rounded-full transition-all duration-300`} style={{
+                    width: `${([trailsGenerated, step2Completed, step3Completed, step4Completed].filter(Boolean).length / 4) * 100}%`
+                  }}></div>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="p-6">
-            {/* Step 1: Setup Trails (visible until generated) */}
+            {/* Step 1: Setup Trails */}
             {!trailsGenerated && (
-              <div ref={step1Ref} className={`border rounded-lg p-6 mb-4 transition-colors border-gray-200 hover:border-blue-300`}>
+              <div ref={step1Ref} className="border rounded-lg p-6 mb-4 border-gray-200 hover:border-blue-300">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
                     <Circle className="h-6 w-6 text-gray-300" />
@@ -283,6 +489,7 @@ function App() {
                     <p className="text-gray-600 mb-4">
                       Let's start by creating a mind-map of your product to track your support tickets to relevant product parts
                     </p>
+                    
                     {/* Video Thumbnail */}
                     <div className="mb-6">
                       <div 
@@ -319,7 +526,7 @@ function App() {
                               autoFocus
                               value={websiteUrl}
                               onChange={(e) => setWebsiteUrl(e.target.value)}
-                              placeholder="https://your-website.com"
+                              placeholder="https://paytm.com"
                               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                             />
                           </div>
@@ -355,147 +562,319 @@ function App() {
               </div>
             )}
 
-            {/* Step 2 and further steps */}
-            <div className="space-y-4">
-              {[
-                { title: 'Select channels to create tickets or conversations', description: 'Choose channels and minimal configuration to get started', gate: () => trailsGenerated, complete: step2Completed, backRef: step1Ref, backLabel: 'Back to Step 1' },
-                { title: 'Add assignment rules for tickets/conversations (NEW)', description: 'Round robin, load balancing, random, capacity-based. Agent auto-updates workflows.', gate: () => step2Completed, complete: step3Completed, ref: (el: HTMLDivElement) => (step3Ref.current = el), backRef: step2Ref, backLabel: 'Back to Step 2' },
-                { title: 'Set up support metrics', description: 'Introduce default metrics and SLA/CSAT with quick edits', gate: () => step3Completed, complete: step4Completed, ref: (el: HTMLDivElement) => (step4Ref.current = el), backRef: step3Ref, backLabel: 'Back to Step 3' }
-              ].filter((cfg) => cfg.gate()).map((step, index) => (
-                <div
-                  key={index}
-                  ref={index === 0 ? step2Ref : (step as any).ref}
-                  tabIndex={index === 0 ? -1 : undefined}
-                  className={`border rounded-lg p-6 ${focusedStep === 2 && index === 0 ? 'border-blue-300 ring-2 ring-blue-400 bg-blue-50/40' : 'border-gray-200'}`}
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 mt-1">
-                      {((step as any).complete) ? (
-                        <CheckCircle2 className="h-6 w-6 text-blue-500" />
-                      ) : (
-                        <Circle className="h-6 w-6 text-gray-300" />
+            {/* Step 2: Import Data */}
+            {trailsGenerated && (
+              <div
+                ref={step2Ref}
+                tabIndex={-1}
+                className={`border rounded-lg p-6 mb-4 transition-colors ${
+                  focusedStep === 2 ? 'border-blue-300 ring-2 ring-blue-400 bg-blue-50/40' : 'border-gray-200'
+                }`}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 mt-1">
+                    {step2Completed ? (
+                      <CheckCircle2 className="h-6 w-6 text-blue-500" />
+                    ) : (
+                      <Circle className="h-6 w-6 text-gray-300" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900">Import Data from existing support applications</h3>
+                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Step 2</span>
+                      {step2Completed && (
+                        <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Completed</span>
                       )}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-medium text-gray-700">{step.title}</h3>
-                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-                          Step {index + 2}
-                        </span>
-                        {((step as any).complete) && (
-                          <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Completed</span>
-                        )}
-                      </div>
-                      <div className="text-gray-500 space-y-2">
-                        <p>{step.description}</p>
-                        {index === 0 && (
-                          <div className="space-y-4">
-                            {step2CarouselIndex === 0 && (
-                              <div className="space-y-2">
-                                <p className="text-sm text-gray-600">Select channels:</p>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {['Email', 'Slack', 'Whatsapp', 'Live Chat widget', 'Customer Portal', 'Telephony'].map((name) => (
-                                    <label key={name} className="flex items-center space-x-2 text-sm">
-                                      <input
-                                        type="checkbox"
-                                        className="h-3 w-3"
-                                        checked={selectedChannels[name]}
-                                        onChange={(e) => setSelectedChannels({ ...selectedChannels, [name]: e.target.checked })}
-                                      />
-                                      <span className="text-gray-700">{name}</span>
-                                    </label>
-                                  ))}
-                                </div>
-                                <div className="flex justify-end mt-4">
-                                  <button
-                                    onClick={() => setStep2CarouselIndex(1)}
-                                    className="px-4 py-2 bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white rounded-lg flex items-center space-x-2"
-                                  >
-                                    <span>Next</span>
-                                    <ArrowRight className="h-4 w-4" />
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                            {step2CarouselIndex === 1 && (
-                              <div className="space-y-4">
-                                <p className="text-sm text-gray-600">
-                                  Answer quick questions for computer to quick setup email and chat widget channel for you:
-                                </p>
-                                <div className="space-y-3">
-                                  <label className="block text-sm font-medium text-gray-700">
-                                    1. Which Email Provider do you use?
-                                  </label>
-                                  <select
-                                    value={emailProvider}
-                                    onChange={(e) => setEmailProvider(e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                                  >
-                                    <option value="">Select email provider</option>
-                                    <option value="gmail">Gmail</option>
-                                    <option value="outlook">Outlook</option>
-                                    <option value="yahoo">Yahoo</option>
-                                    <option value="other">Other</option>
-                                  </select>
-                                </div>
-                                <div className="flex justify-between mt-4">
-                                  <button
-                                    onClick={() => setStep2CarouselIndex(0)}
-                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                                  >
-                                    Back
-                                  </button>
-                                  <button
-                                    onClick={() => setStep2Completed(true)}
-                                    className="px-4 py-2 bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white rounded-lg"
-                                  >
-                                    Complete Setup
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        {index === 1 && (
-                          <ul className="list-disc pl-5 text-sm text-gray-600">
-                            <li>Round robin, Load balancing, Random, Capacity-based</li>
-                            <li>Agent applies rules to workflows or snap-ins automatically</li>
-                          </ul>
-                        )}
-                        {index === 2 && (
-                          <ul className="list-disc pl-5 text-sm text-gray-600">
-                            <li>SLA: default metrics, default schedule; edit org schedule and conditions</li>
-                            <li>CSAT: deployed with standard settings; edit anytime</li>
-                            <li>i) Setup SLA metrics (NEW)  ii) Setup org schedules  iii) SLA policies</li>
-                          </ul>
-                        )}
-                        <div className="pt-3">
-                          {index === 0 && step2CarouselIndex === 0 && (
+                    <p className="text-gray-600 mb-4">
+                      Connect your existing support tools to import tickets, customers, and historical data
+                    </p>
+
+                    {!step2Completed && !airsyncInProgress && (
+                      <div className="space-y-4">
+                        <p className="text-sm font-medium text-gray-700">Select your current support platform:</p>
+                        <div className="grid grid-cols-2 gap-4">
+                          {[
+                            { name: 'Zendesk', icon: '🎫', color: 'border-gray-300' },
+                            { name: 'Salesforce', icon: '☁️', color: 'border-blue-300' },
+                            { name: 'Hubspot', icon: '🧡', color: 'border-orange-300' },
+                            { name: 'Create own airsync connector', icon: '⚡', color: 'border-purple-300' }
+                          ].map((platform) => (
                             <button
-                              className="text-sm text-blue-600 hover:text-blue-700"
-                              onClick={() => {
-                                // Scroll to a hidden Step 1 reference or show a modal
-                                alert('Step 1 is completed. You can regenerate trails from the main page.');
-                              }}
+                              key={platform.name}
+                              onClick={() => handleImportSourceSelect(platform.name === 'Create own airsync connector' ? 'custom' : platform.name)}
+                              className={`p-4 border-2 rounded-lg hover:bg-gray-50 transition-colors ${platform.color} ${
+                                selectedImportSource === platform.name ? 'border-blue-500 bg-blue-50' : ''
+                              }`}
                             >
-                              Back to Step 1
+                              <div className="flex items-center space-x-3">
+                                <span className="text-2xl">{platform.icon}</span>
+                                <span className="font-medium text-gray-900">{platform.name}</span>
+                              </div>
                             </button>
-                          )}
-                          {index > 0 && (step as any).backRef?.current && (
-                            <button
-                              className="text-sm text-blue-600 hover:text-blue-700"
-                              onClick={() => (step as any).backRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                            >
-                              {(step as any).backLabel}
-                            </button>
-                          )}
+                          ))}
                         </div>
                       </div>
-                    </div>
+                    )}
+
+                    {airsyncInProgress && (
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <Loader2 className="h-6 w-6 text-blue-600 animate-spin" />
+                          <div>
+                            <h4 className="font-medium text-blue-900">Airsync in Progress</h4>
+                            <p className="text-sm text-blue-700">Importing data from {selectedImportSource}...</p>
+                          </div>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">Transformation Progress</span>
+                            <span className="text-sm text-gray-600">75%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="bg-blue-500 h-2 rounded-full w-3/4 transition-all duration-300"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {step2Completed && (
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                          <CheckCircle2 className="h-6 w-6 text-green-600" />
+                          <div>
+                            <h4 className="font-medium text-green-900">Import Completed</h4>
+                            <p className="text-sm text-green-700">
+                              Successfully imported data from {selectedImportSource}. New vistas have been added to your workspace.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
+
+            {/* Step 3: Customize tickets and conversations */}
+            {step2Completed && (
+              <div
+                ref={step3Ref}
+                className={`border rounded-lg p-6 mb-4 transition-colors ${
+                  focusedStep === 3 ? 'border-blue-300 ring-2 ring-blue-400 bg-blue-50/40' : 'border-gray-200'
+                }`}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 mt-1">
+                    {step3Completed ? (
+                      <CheckCircle2 className="h-6 w-6 text-blue-500" />
+                    ) : (
+                      <Circle className="h-6 w-6 text-gray-300" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900">Customize tickets and conversations</h3>
+                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Step 3</span>
+                      {step3Completed && (
+                        <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Completed</span>
+                      )}
+                    </div>
+                    <p className="text-gray-600 mb-4">
+                      Based on your website (paytm.com), we've detected you're in the <strong>Financial Services</strong> industry. 
+                      We recommend adding these fields to your tickets:
+                    </p>
+
+                    {!step3Completed && (
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm font-medium text-gray-700 mb-3">Recommended ticket fields for Financial Services:</p>
+                          <div className="grid grid-cols-2 gap-3">
+                            {Object.entries(selectedTicketFields).map(([field, selected]) => (
+                              <label key={field} className="flex items-center space-x-3">
+                                <input
+                                  type="checkbox"
+                                  checked={selected}
+                                  onChange={(e) => setSelectedTicketFields({
+                                    ...selectedTicketFields,
+                                    [field]: e.target.checked
+                                  })}
+                                  className="h-4 w-4 text-blue-600"
+                                />
+                                <span className="text-sm text-gray-700">{field}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex justify-end">
+                          <button
+                            onClick={() => setStep3Completed(true)}
+                            className="px-6 py-2 bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white rounded-lg"
+                          >
+                            Apply Field Configuration
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {step3Completed && (
+                      <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <CheckCircle2 className="h-6 w-6 text-green-600" />
+                        <div>
+                          <h4 className="font-medium text-green-900">Fields Configured</h4>
+                          <p className="text-sm text-green-700">
+                            Custom fields have been added to your ticket and conversation forms.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Select channels */}
+            {step3Completed && (
+              <div
+                ref={step4Ref}
+                className={`border rounded-lg p-6 transition-colors ${
+                  focusedStep === 4 ? 'border-blue-300 ring-2 ring-blue-400 bg-blue-50/40' : 'border-gray-200'
+                }`}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 mt-1">
+                    {step4Completed ? (
+                      <CheckCircle2 className="h-6 w-6 text-blue-500" />
+                    ) : (
+                      <Circle className="h-6 w-6 text-gray-300" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900">Select channels to create tickets or conversations</h3>
+                      <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Step 4</span>
+                      {step4Completed && (
+                        <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Completed</span>
+                      )}
+                    </div>
+                    <p className="text-gray-600 mb-4">
+                      Choose channels and minimal configuration to get started
+                    </p>
+
+                    {!step4Completed && (
+                      <div className="space-y-4">
+                        {step2CarouselIndex === 0 && (
+                          <div className="space-y-4">
+                            <p className="text-sm font-medium text-gray-700">Which email provider do you use?</p>
+                            <div className="grid grid-cols-2 gap-4">
+                              <button
+                                onClick={() => {
+                                  setSelectedEmailProvider('gmail');
+                                  setStep2CarouselIndex(1);
+                                }}
+                                className={`p-6 border-2 rounded-lg hover:bg-gray-50 transition-colors ${
+                                  selectedEmailProvider === 'gmail' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                                }`}
+                              >
+                                <div className="flex flex-col items-center space-y-3">
+                                  <Mail className="h-8 w-8 text-red-500" />
+                                  <span className="font-medium text-gray-900">Gmail</span>
+                                </div>
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setSelectedEmailProvider('custom');
+                                  setStep2CarouselIndex(1);
+                                }}
+                                className={`p-6 border-2 rounded-lg hover:bg-gray-50 transition-colors ${
+                                  selectedEmailProvider === 'custom' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                                }`}
+                              >
+                                <div className="flex flex-col items-center space-y-3">
+                                  <Building className="h-8 w-8 text-orange-500" />
+                                  <span className="font-medium text-gray-900">Custom Domain</span>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {step2CarouselIndex === 1 && selectedEmailProvider === 'gmail' && !isGoogleSignedIn && (
+                          <div className="space-y-4">
+                            <div className="text-center p-6 border border-gray-200 rounded-lg">
+                              <Mail className="h-12 w-12 text-red-500 mx-auto mb-4" />
+                              <h4 className="text-lg font-medium text-gray-900 mb-2">Connect your Gmail</h4>
+                              <p className="text-gray-600 mb-4">Sign in with Google to connect your Gmail account</p>
+                              <button
+                                onClick={handleGoogleSignIn}
+                                className="flex items-center space-x-3 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 mx-auto"
+                              >
+                                <div className="w-5 h-5 bg-gradient-to-r from-red-500 to-yellow-500 rounded"></div>
+                                <span>Sign in with Google</span>
+                              </button>
+                            </div>
+                            <div className="flex justify-between">
+                              <button
+                                onClick={() => setStep2CarouselIndex(0)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                              >
+                                Back
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {step2CarouselIndex === 2 && isGoogleSignedIn && (
+                          <div className="space-y-4">
+                            <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                              <CheckCircle2 className="h-6 w-6 text-green-600" />
+                              <div>
+                                <h4 className="font-medium text-green-900">Gmail Connected Successfully</h4>
+                                <p className="text-sm text-green-700">Your Gmail account has been connected.</p>
+                              </div>
+                            </div>
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                              <h4 className="font-medium text-blue-900 mb-2">Portal Created</h4>
+                              <p className="text-sm text-blue-700 mb-3">
+                                Based on your website design (paytm.com), we've automatically created a customer portal that matches your brand.
+                              </p>
+                              <div className="bg-white rounded border p-3">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <div className="w-4 h-4 bg-blue-600 rounded"></div>
+                                  <span className="text-sm font-medium">Paytm Support Portal</span>
+                                </div>
+                                <p className="text-xs text-gray-600">Auto-generated based on your website theme and colors</p>
+                              </div>
+                            </div>
+                            <div className="flex justify-end">
+                              <button
+                                onClick={() => setStep4Completed(true)}
+                                className="px-6 py-2 bg-[#3B3BFF] hover:bg-[#2F2FFF] text-white rounded-lg"
+                              >
+                                Complete Setup
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {step4Completed && (
+                      <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <CheckCircle2 className="h-6 w-6 text-green-600" />
+                        <div>
+                          <h4 className="font-medium text-green-900">Channels Configured</h4>
+                          <p className="text-sm text-green-700">
+                            Email channel and customer portal have been set up successfully.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -508,7 +887,10 @@ function App() {
       {showNotification && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-3">
           <CheckCircle2 className="h-5 w-5" />
-          <span>Trails generated successfully! Check the "Trails" section in the navigation.</span>
+          <span>
+            {trailsGenerated && !step2Completed && "Trails generated successfully! Check the 'Trails' section in the navigation."}
+            {step2Completed && "Data import completed! New vistas have been added to your workspace."}
+          </span>
         </div>
       )}
 
@@ -587,6 +969,56 @@ function App() {
                   </a>
                 </div>
               )}
+
+              {/* Work Section */}
+              {showWorkSections && (
+                <div className="mt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Work
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Ticket className="h-4 w-4" />
+                      <span>Tickets</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      <span>Conversations</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Customers Section */}
+              {showWorkSections && (
+                <div className="mt-8">
+                  <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Customers
+                  </h3>
+                  <div className="space-y-1">
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <UserCheck className="h-4 w-4" />
+                      <span>Contacts</span>
+                    </a>
+                    <a 
+                      href="#" 
+                      className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-50"
+                    >
+                      <Building2 className="h-4 w-4" />
+                      <span>Accounts</span>
+                    </a>
+                  </div>
+                </div>
+              )}
             </nav>
           </div>
         </div>
@@ -595,8 +1027,10 @@ function App() {
         {currentPage === 'trails' ? <TrailsPage /> : <GetStartedPage />}
       </div>
 
-      {/* Video Modal */}
+      {/* Modals */}
       {showVideoModal && <VideoModal />}
+      {showAirsyncModal && <AirsyncModal />}
+      {showCustomConnectorModal && <CustomConnectorModal />}
     </div>
   );
 }
