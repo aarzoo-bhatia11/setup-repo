@@ -1254,7 +1254,7 @@ function App() {
                                 <input
                                   type="text"
                                   placeholder="Search questions, keywords, topics"
-                                  className="w-full pl-10 pr-4 py-3 rounded-lg text-gray-900"
+                                  placeholder="eg. https://devrev.ai"
                                   readOnly
                                 />
                               </div>
