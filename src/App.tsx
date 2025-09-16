@@ -6,6 +6,7 @@ function App() {
   const [selectedNav, setSelectedNav] = useState('Support');
   const [carouselStep, setCarouselStep] = useState(1);
   const [selectedOutcome, setSelectedOutcome] = useState('');
+  const [customGoal, setCustomGoal] = useState('');
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -18,10 +19,11 @@ function App() {
   };
 
   const outcomes = [
-    { id: 'reduce-response-time', label: 'Reduce customer response time', icon: Clock },
-    { id: 'improve-satisfaction', label: 'Improve customer satisfaction scores', icon: Shield },
-    { id: 'automate-support', label: 'Automate routine support tasks', icon: Zap },
-    { id: 'scale-support', label: 'Scale support operations efficiently', icon: Globe }
+    { id: 'reduce-response-time', label: 'Reduce response time by 50%', icon: Clock },
+    { id: 'improve-satisfaction', label: 'Increase customer satisfaction scores', icon: Shield },
+    { id: 'scale-support', label: 'Scale support without hiring more agents', icon: Zap },
+    { id: 'improve-resolution', label: 'Improve first-contact resolution rate', icon: CheckCircle },
+    { id: 'better-visibility', label: 'Better visibility into support performance', icon: Globe }
   ];
 
   const renderSetupContent = () => {
@@ -49,8 +51,22 @@ function App() {
             {carouselStep === 1 ? (
               <div className="space-y-4">
                 <div>
+                  <label htmlFor="custom-goal" className="block text-sm font-medium text-gray-700 mb-2">
+                    Type your goal
+                  </label>
+                  <input
+                    type="text"
+                    id="custom-goal"
+                    value={customGoal}
+                    onChange={(e) => setCustomGoal(e.target.value)}
+                    placeholder="Enter your support goal..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
+                  />
+                  
+                  <div className="text-center text-gray-500 text-sm mb-4">or</div>
+                  
                   <label className="block text-sm font-medium text-gray-700 mb-4">
-                    What's your primary goal?
+                    Select one of the below:
                   </label>
                   <div className="grid grid-cols-1 gap-3">
                     {outcomes.map((outcome) => {
@@ -142,7 +158,7 @@ function App() {
                     setCarouselStep(Math.min(2, carouselStep + 1));
                   }
                 }}
-                disabled={carouselStep === 1 && !selectedOutcome}
+                disabled={carouselStep === 1 && !selectedOutcome && !customGoal.trim()}
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 <span>{carouselStep === 2 ? 'Continue' : 'Next'}</span>
@@ -156,33 +172,33 @@ function App() {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Review Generated Content</h2>
-              <p className="text-gray-600">Review and customize the automatically generated support content.</p>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Setup Your Knowledge Base</h2>
+              <p className="text-gray-600">Setup your knowledge base for our customer plug to deflect most of the queries on its own without involving your support teams.</p>
             </div>
             
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span className="text-green-800 font-medium">Trails generated successfully!</span>
+                <HelpCircle className="w-5 h-5 text-blue-600" />
+                <span className="text-blue-800 font-medium">Knowledge Base Configuration</span>
               </div>
-              <p className="text-green-700 mt-2">Found 12 support scenarios and generated corresponding trails.</p>
+              <p className="text-blue-700 mt-2">We'll help you organize your existing documentation and FAQs to power intelligent responses.</p>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">Generated Trails Preview</h3>
+              <h3 className="text-lg font-medium text-gray-900">Knowledge Sources</h3>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-white rounded border">
-                    <span className="font-medium">Account Setup & Login Issues</span>
-                    <span className="text-sm text-gray-500">8 steps</span>
+                    <span className="font-medium">Upload Documentation</span>
+                    <span className="text-sm text-blue-600">Configure</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-white rounded border">
-                    <span className="font-medium">Payment & Billing Support</span>
-                    <span className="text-sm text-gray-500">12 steps</span>
+                    <span className="font-medium">Connect Help Center</span>
+                    <span className="text-sm text-blue-600">Configure</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-white rounded border">
-                    <span className="font-medium">Feature Requests & Feedback</span>
-                    <span className="text-sm text-gray-500">6 steps</span>
+                    <span className="font-medium">Import FAQs</span>
+                    <span className="text-sm text-blue-600">Configure</span>
                   </div>
                 </div>
               </div>
@@ -202,55 +218,61 @@ function App() {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Configure Workflow</h2>
-              <p className="text-gray-600">Configure your support workflow and automation rules.</p>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Default Workflows Setup</h2>
+              <p className="text-gray-600">Here are the default workflows we have setup for you:</p>
             </div>
             
             <div className="space-y-6">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Recommended stage diagram</h3>
-                <div className="bg-white p-4 rounded-lg border">
-                  <img 
-                    src="https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800&h=400&fit=crop" 
-                    alt="Stage Diagram" 
-                    className="w-full h-48 object-cover rounded"
-                  />
-                </div>
-              </div>
-
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900">Automation Rules</h3>
+                <h3 className="text-lg font-medium text-gray-900">Automated Workflows</h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <Zap className="w-5 h-5 text-blue-600" />
+                      <CheckCircle className="w-5 h-5 text-green-600" />
                       <div>
-                        <p className="font-medium">Auto-assign based on keywords</p>
-                        <p className="text-sm text-gray-500">Automatically route tickets to appropriate teams</p>
+                        <p className="font-medium">Auto-categorization of incoming tickets</p>
+                        <p className="text-sm text-gray-500">Automatically categorize and route tickets</p>
                       </div>
                     </div>
-                    <input type="checkbox" className="rounded" defaultChecked />
+                    <span className="text-sm text-green-600 font-medium">Active</span>
                   </div>
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <Clock className="w-5 h-5 text-green-600" />
+                      <CheckCircle className="w-5 h-5 text-green-600" />
                       <div>
-                        <p className="font-medium">SLA monitoring</p>
-                        <p className="text-sm text-gray-500">Track response times and escalate when needed</p>
+                        <p className="font-medium">Auto-responses for common queries</p>
+                        <p className="text-sm text-gray-500">Instant responses for frequently asked questions</p>
                       </div>
                     </div>
-                    <input type="checkbox" className="rounded" defaultChecked />
+                    <span className="text-sm text-green-600 font-medium">Active</span>
                   </div>
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-3">
-                      <Shield className="w-5 h-5 text-purple-600" />
+                      <CheckCircle className="w-5 h-5 text-green-600" />
                       <div>
-                        <p className="font-medium">Priority escalation</p>
-                        <p className="text-sm text-gray-500">Automatically escalate high-priority issues</p>
+                        <p className="font-medium">Escalation workflows for complex issues</p>
+                        <p className="text-sm text-gray-500">Smart escalation based on complexity and priority</p>
                       </div>
                     </div>
-                    <input type="checkbox" className="rounded" />
+                    <span className="text-sm text-green-600 font-medium">Active</span>
                   </div>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                      <div>
+                        <p className="font-medium">Bulk update workflows for similar tickets</p>
+                        <p className="text-sm text-gray-500">Efficiently handle multiple similar requests</p>
+                      </div>
+                    </div>
+                    <span className="text-sm text-green-600 font-medium">Active</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2">
+                  <Zap className="w-5 h-5 text-green-600" />
+                  <span className="text-green-800 font-medium">Impact: Saves 2-3 hours per agent daily</span>
                 </div>
               </div>
             </div>
@@ -272,25 +294,50 @@ function App() {
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Setup Complete!</h2>
-              <p className="text-gray-600">Your AI-native support system is now ready to use.</p>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Chat Widget and Portal Setup</h2>
+              <p className="text-gray-600">We have setup chat widget and portal for you.</p>
             </div>
             
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h3 className="text-lg font-medium text-blue-900 mb-4">What's Next?</h3>
-              <div className="space-y-3 text-left">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                  <span className="text-blue-800">Start receiving and managing support tickets</span>
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium text-gray-900">Customer Touchpoints</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="font-medium">Chat Widget</p>
+                      <p className="text-sm text-gray-500">Embedded on your website for instant support</p>
+                    </div>
+                  </div>
+                  <span className="text-sm text-green-600 font-medium">Ready</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                  <span className="text-blue-800">Monitor AI-powered insights and analytics</span>
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="font-medium">Customer Portal</p>
+                      <p className="text-sm text-gray-500">Self-service portal for ticket management</p>
+                    </div>
+                  </div>
+                  <span className="text-sm text-green-600 font-medium">Ready</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                  <span className="text-blue-800">Customize workflows based on your needs</span>
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="font-medium">Email Integration</p>
+                      <p className="text-sm text-gray-500">Seamless email-to-ticket conversion</p>
+                    </div>
+                  </div>
+                  <span className="text-sm text-green-600 font-medium">Ready</span>
                 </div>
+              </div>
+            </div>
+            
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span className="text-green-800 font-medium">Setup Complete! Your support system is ready to scale.</span>
               </div>
             </div>
 
@@ -299,6 +346,7 @@ function App() {
                 setCurrentStep(1);
                 setCarouselStep(1);
                 setSelectedOutcome('');
+                setCustomGoal('');
                 setWebsiteUrl('');
               }}
               className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700"
